@@ -20,7 +20,7 @@ import { loadBlock } from "./utils/buildingBlockLoader";
 import { loadCar } from "./utils/raceCarLoader";
 import { loadObstacleOne, loadRoadObstacle } from "./utils/obstaclesLoader";
 
-export default class MainScene extends Scene {
+export default class RaceScene extends Scene {
   private mainRoad = new Object3D();
   private mainRoadClone = new Object3D();
   private roadSize = 0;

@@ -1,7 +1,7 @@
 import { WebGLRenderer, PerspectiveCamera } from "three";
 
 import RaceScene from "./scenes/Race";
-
+import MainMenuScene from "./scenes/MainMenu";
 const width = window.innerWidth;
 const height = window.innerHeight;
 
@@ -21,18 +21,20 @@ function onWindowResize() {
 }
 window.addEventListener("resize", onWindowResize);
 const raceScene = new RaceScene();
+const mainMenuScene = new MainMenuScene();
 
 const render = () => {
-  raceScene.update();
-  renderer.render(raceScene, mainCamera);
+  mainMenuScene.update();
+  renderer.render(mainMenuScene, mainCamera);
   requestAnimationFrame(render);
 };
 
 const main = async () => {
-  await raceScene.load();
+  await mainMenuScene.load();
   (document.querySelector(".loader-container") as HTMLElement).style.display =
     "none";
-  raceScene.initialize();
+  
+  mainMenuScene.initialize();
 
   render();
 };

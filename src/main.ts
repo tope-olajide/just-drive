@@ -1,24 +1,40 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import { WebGLRenderer, PerspectiveCamera } from "three";
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+import RaceScene from "./scenes/Race";
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+const width = window.innerWidth;
+const height = window.innerHeight;
+
+const renderer = new WebGLRenderer({
+  canvas: document.getElementById("app") as HTMLCanvasElement,
+  antialias: true,
+});
+
+renderer.setSize(width, height);
+export const mainCamera = new PerspectiveCamera(60, width / height, 0.1, 800);
+mainCamera.rotation.x = -10 * (Math.PI / 180);
+mainCamera.position.set(-0.001, 0.1, 0);
+function onWindowResize() {
+  mainCamera.aspect = window.innerWidth / window.innerHeight;
+  mainCamera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+window.addEventListener("resize", onWindowResize);
+const raceScene = new RaceScene();
+
+const render = () => {
+  raceScene.update();
+  renderer.render(raceScene, mainCamera);
+  requestAnimationFrame(render);
+};
+
+const main = async () => {
+  await raceScene.load();
+  (document.querySelector(".loader-container") as HTMLElement).style.display =
+    "none";
+  raceScene.initialize();
+
+  render();
+};
+
+main();

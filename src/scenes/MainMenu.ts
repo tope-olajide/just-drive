@@ -14,11 +14,11 @@ import {
   import { mainCamera } from "../main";
   import TWEEN, { Tween } from "@tweenjs/tween.js";
   
-  import { mainRoad } from "./utils/mainRoad";
-  import { citySkyBox } from "./utils/skybox";
-  import { loadBlock } from "./utils/buildingBlockLoader";
-  import { loadCar } from "./utils/raceCarLoader";
-  import { loadObstacleOne, loadRoadObstacle } from "./utils/obstaclesLoader";
+  import { mainRoad } from "../utils/mainRoad";
+  import { citySkyBox } from "../utils/skybox";
+  import { loadBlock } from "../utils/buildingBlockLoader";
+  import { loadCar } from "../utils/raceCarLoader";
+  import { loadObstacleOne, loadRoadObstacle } from "../utils/obstaclesLoader";
   
 export default class MainMenuScene extends Scene {
     private mainRoad = new Object3D();
@@ -103,10 +103,17 @@ export default class MainMenuScene extends Scene {
     } */
   
     initialize() {
+        if (!this.visible) {
+            this.visible = true;
+        }
+        (document.querySelector('.menu-buttons-container') as HTMLInputElement).style.display = 'flex';
+        (document.querySelector('.info-section') as HTMLInputElement).style.display = 'block';
         const ambient = new AmbientLight("#3F4A59", 6);
         this.add(ambient);
+
+        mainCamera.rotation.set(0,0,0);
   
-        const light = new DirectionalLight(0xffffff, 2);
+        const light = new DirectionalLight(0xffffff, 5);
         light.position.set(0, 2, 1);
         this.add(light);
   
@@ -155,9 +162,9 @@ export default class MainMenuScene extends Scene {
         this.playerBox.position.set(-0.015, -0.047, -0.18);
         //  this.add(this.playerBox);
   
-        this.ferrari.scale.set(0.0075, 0.0075, 0.0075);
-        this.ferrari.rotation.y = 180 * (Math.PI / 180);
-        this.ferrari.position.set(-0.04, -0.065, -0.48);
+        this.ferrari.scale.set(0.012, 0.012, 0.012);
+        //this.ferrari.rotation.y = 180 * (Math.PI / 180);
+        this.ferrari.position.set(0, -0.065, -0.8);
   
         this.add(this.ferrari);
         /*     this.bus.rotation.y = 180 * (Math.PI / 180);
@@ -279,6 +286,14 @@ export default class MainMenuScene extends Scene {
     }
     update() {
       
+    }
+
+    hide() {
+        this.visible = false;
+        (document.querySelector('.menu-buttons-container') as HTMLInputElement).style.display = 'none';
+        (document.querySelector('.info-section') as HTMLInputElement).style.display = 'none';
+
+        
     }
 }
   

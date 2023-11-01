@@ -5,6 +5,8 @@ import MainMenuScene from "./scenes/MainMenu";
 const width = window.innerWidth;
 const height = window.innerHeight;
 
+let currentScene: MainMenuScene | RaceScene ;
+
 const renderer = new WebGLRenderer({
   canvas: document.getElementById("app") as HTMLCanvasElement,
   antialias: true,
@@ -20,23 +22,45 @@ function onWindowResize() {
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
 window.addEventListener("resize", onWindowResize);
+
 const raceScene = new RaceScene();
 const mainMenuScene = new MainMenuScene();
 
-const render = () => {
-  mainMenuScene.update();
-  renderer.render(mainMenuScene, mainCamera);
-  requestAnimationFrame(render);
+const switchToMainMenuScene = () => {
+  currentScene.hide();
+  currentScene = mainMenuScene;
+  currentScene.initialize();
 };
 
+const switchToRaceScene = () => {
+  currentScene.hide();
+  currentScene = raceScene;
+  currentScene.initialize();
+};
+currentScene = mainMenuScene;
+
+const render = () => {
+  currentScene.update();
+  renderer.render(currentScene, mainCamera);
+  requestAnimationFrame(render);
+};
+(
+  document.querySelector("#playGameButton") as HTMLInputElement
+).onclick = () => {
+ switchToRaceScene();
+};
 const main = async () => {
+  await raceScene.load();
   await mainMenuScene.load();
   (document.querySelector(".loader-container") as HTMLElement).style.display =
     "none";
-  
-  mainMenuScene.initialize();
-
-  render();
+  currentScene.initialize();
+render();
 };
 
 main();
+
+
+
+
+

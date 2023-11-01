@@ -4,29 +4,53 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="./src/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Just Drive</title>
   </head>
   <body>
     <section class="main-container">
-       <section class="loader-container">
-      <img src="./public/assets/Infinity-1s-200px.gif" />
-      <h3>Loading...</h3>
-    </section>
-      
-     <section>
-      <h1>HighScores:20000</h1>
-      <h1>Coins:20000</h1>
-     </section>
+      <section class="loader-container">
+        <img src="./public/assets/Infinity-1s-200px.gif" />
+        <h3>Loading...</h3>
+      </section>
 
-     <section class="menu-buttons-container">
-      <button>Play</button>
-      <button>Market</button>
-      <button>About</button>
-      <button>Competition</button>
-     </section>
+      <section class="info-section">
+        <h1>HighScores:20000</h1>
+        <h1>Coins:20000</h1>
+      </section>
+
+      <section class="modal" id="competitionModal">
+        <div class="modal-header">
+          <h2 class="empty-space">.</h2>
+          <h4>New Competition</h4>
+          <h2 id="closeCompetitionModal">X</h2>
+        </div>
+        <div class="modal-body" id="competitionModalBody">
+          <div id="usernameSection">
+            <h3>Enter your username</h3>
+        <input type="text" id="username">
+          </div>
+          
+          <button id="createCompetitionButton">Create</button>
+          <div id="newCompetitionSpinner" class="spinner"></div>
+          <button id="copyLinkButton">Copy Link</button>
+          <button id="startGameButton">Start</button>
+        </div>
+        <div class="modal-bottom"></div>
+      </section>
+
+      <section class="menu-buttons-container">
+        <button id="playGameButton">Play</button>
+        <button>Market</button>
+        <button>About</button>
+        <button id="competitionButton">Competition</button>
+      </section>
+
+      <button class="pause-button"><i class="fa-solid fa-pause"></i></button>
     </section>
     <canvas id="app"> </canvas>
     <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="src/utils/competition.ts"></script>
   </body>
 </html>

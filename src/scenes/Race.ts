@@ -46,7 +46,7 @@ export default class RaceScene extends Scene {
   private taxi = new Object3D();
 
   private obstacleOne = new Group();
-
+  private isGamePaused = false;
   async load() {
     this.mainRoad = await mainRoad();
     this.skyBox = await citySkyBox();
@@ -65,6 +65,9 @@ export default class RaceScene extends Scene {
     this.taxi.scale.set(0.00017, 0.00017, 0.00017);
 
     this.obstacleOne = loadObstacleOne(this.bus, this.taxi);
+    (document.querySelector('.pause-button') as HTMLInputElement).onclick = () => {
+      this.pauseAndResumeGame();
+    };
   }
 
   /*  private poolBuildingBlocks() {
@@ -109,7 +112,10 @@ export default class RaceScene extends Scene {
     const light = new DirectionalLight(0xffffff, 1);
     light.position.set(0, 2, 1);
     this.add(light);
-
+    if (!this.visible) {
+      this.visible = true;
+    }
+    this.clock.start();
     
     (document.querySelector('.pause-button') as HTMLInputElement).style.display = 'block';
     this.buildingBlockA.position.set(-0.45, -0.088, -1.6);
@@ -223,7 +229,15 @@ export default class RaceScene extends Scene {
     mainCamera.position.z += 0.08;
     //this.playerBox.position.z -= 0.008;
   };
-
+  private pauseAndResumeGame() {
+    if (!this.isGamePaused) {
+      (document.getElementById('gamePausedModal') as HTMLInputElement).style.display = 'flex';
+      this.isGamePaused = true;
+    } else {
+      (document.getElementById('gamePausedModal') as HTMLInputElement).style.display = 'none';
+      this.isGamePaused = false;
+    }
+  }
   private moveLeft() {
     //    if (this.ferrari.position.x !== -0.051) {
     console.log(this.ferrari.position.x);
@@ -328,6 +342,8 @@ export default class RaceScene extends Scene {
   hide() {
 
     (document.querySelector('.pause-button') as HTMLInputElement).style.display = 'none';
+    this.visible = false;
+    this.clock.stop()
 
    }
 }

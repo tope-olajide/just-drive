@@ -48,6 +48,20 @@
       </section>
 
       <button class="pause-button"><i class="fa-solid fa-pause"></i></button>
+
+      <section class="modal" id="gamePausedModal">
+        <div class="modal-header">
+          <h2 class="empty-space">.</h2>
+          <h4>Game Paused!</h4>
+          <h2 id="closeCompetitionModal">X</h2>
+        </div>
+        <div class="modal-body" id="competitionModalBody">
+          <button id="resumeGameButton">Resume</button>
+          <button id="quitGameButton">Quit</button>
+        </div>
+        <div class="modal-bottom"></div>
+      </section>
+
     </section>
     <canvas id="app"> </canvas>
     <script type="module" src="/src/main.ts"></script>

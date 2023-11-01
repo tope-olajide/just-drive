@@ -62,5 +62,9 @@ main();
 
 
 
-
-
+(document.querySelector("#quitGameButton") as HTMLInputElement).onclick = () => {
+  (
+    document.getElementById("gamePausedModal") as HTMLInputElement
+  ).style.display = "none"; 
+  switchToMainMenuScene();
+};

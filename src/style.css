@@ -267,3 +267,7 @@ flex-direction: column;
   margin: 20px;
   display: none;
 }
+
+#gamePausedModal{
+  display: none;
+}

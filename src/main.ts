@@ -68,3 +68,10 @@ main();
   ).style.display = "none"; 
   switchToMainMenuScene();
 };
+
+(document.querySelector("#closeGamePausedModal") as HTMLInputElement).onclick = () => {
+  (
+    document.getElementById("gamePausedModal") as HTMLInputElement
+  ).style.display = "none"; 
+};
+

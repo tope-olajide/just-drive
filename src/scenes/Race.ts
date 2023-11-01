@@ -41,6 +41,7 @@ export default class RaceScene extends Scene {
   );
 
   private pooledBuildingBlocks = <Array<Object3D>>[];
+  private pooledObstacles = <Array<Object3D>>[];
   private amountToPool = 4;
   private bus = new Object3D();
   private taxi = new Object3D();
@@ -66,6 +67,12 @@ export default class RaceScene extends Scene {
 
     this.obstacleOne = loadObstacleOne(this.bus, this.taxi);
     (document.querySelector('.pause-button') as HTMLInputElement).onclick = () => {
+      this.pauseAndResumeGame();
+    };
+    (document.querySelector('#closeGamePausedModal') as HTMLInputElement).onclick = () => {
+      this.pauseAndResumeGame();
+    };
+    (document.getElementById('resumeGameButton') as HTMLInputElement).onclick = () => {
       this.pauseAndResumeGame();
     };
   }
@@ -105,10 +112,60 @@ export default class RaceScene extends Scene {
     }
   } */
 
+  private poolObstacles() {
+    for (let i = 0; i < this.amountToPool; i++) { 
+      const obstacleOne = this.obstacleOne.clone();
+      obstacleOne.visible = false;
+      this.add(obstacleOne)
+      this.pooledObstacles.push(obstacleOne);
+    }
+  }
+  private getRandomPooledObstacle() {
+    const availableItems = this.pooledObstacles.filter(item => !item.visible);
+    if (availableItems.length > 0) {
+      const randomIndex = Math.floor(Math.random() * availableItems.length);
+      return availableItems[randomIndex];
+    }
+    return null;
+  }
+
+  private spawnObstacle() {
+    const obstacle = this.getRandomPooledObstacle()
+    if (obstacle) {
+      obstacle.position.z = -10
+      obstacle.visible = true
+    }
+  }
+  
+  private moveObstacle() {
+   
+      for (let i = 0; i < this.pooledObstacles.length; i++) {
+        if (this.pooledObstacles[i].visible) {
+          this.pooledObstacles[i].position.z += this.speed * this.delta;
+          if (this.pooledObstacles[i].position.z > 0.5) {
+            this.pooledObstacles[i].visible = false;
+            this.pooledObstacles[i].position.set(0, 0, 0);
+            
+          }
+          if (this.pooledObstacles[i].position.z > -5) {
+            this.spawnObstacle()
+            
+          }
+          console.log(this.pooledObstacles[i].position.z)
+          //  0.01
+          
+
+        }
+      }
+    
+  }
+
   initialize() {
     const ambient = new AmbientLight("#3F4A59", 2);
     this.add(ambient);
-
+    this.poolObstacles()
+    console.log(this.pooledObstacles.length)
+    this.spawnObstacle()
     const light = new DirectionalLight(0xffffff, 1);
     light.position.set(0, 2, 1);
     this.add(light);
@@ -171,7 +228,7 @@ export default class RaceScene extends Scene {
 /*     this.bus.rotation.y = 180 * (Math.PI / 180);
     this.bus.position.set(-0.04, -0.065, -2.58);
     this.add(this.bus); */
-    this.add(this.obstacleOne);
+   // this.add(this.obstacleOne);
     document.onkeydown = (e) => {
       if (e.key === "ArrowLeft") {
         this.moveLeft();
@@ -306,11 +363,11 @@ export default class RaceScene extends Scene {
     this.buildingBlockC.position.z += this.speed * this.delta;
     this.buildingBlockD.position.z += this.speed * this.delta;
 
-    this.obstacleOne.position.z += this.speed * this.delta;
+/*     this.obstacleOne.position.z += this.speed * this.delta;
    console.log(this.obstacleOne.position.z)
     if (this.obstacleOne.position.z > 0.5) {
       this.obstacleOne.position.z = -5;
-    }
+    } */
 
     if (this.buildingBlockB.position.z > 3.5) {
       this.buildingBlockB.position.z =
@@ -338,6 +395,7 @@ export default class RaceScene extends Scene {
     if (this.mainRoadClone.position.z > 4.1) {
       this.mainRoadClone.position.z = this.mainRoad.position.z - this.roadSize;
     }
+    this.moveObstacle()
   }
   hide() {
 

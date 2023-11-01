@@ -5,7 +5,7 @@ import MainMenuScene from "./scenes/MainMenu";
 const width = window.innerWidth;
 const height = window.innerHeight;
 
-let currentScene: MainMenuScene | RaceScene ;
+let currentScene: MainMenuScene | RaceScene;
 
 const renderer = new WebGLRenderer({
   canvas: document.getElementById("app") as HTMLCanvasElement,
@@ -37,41 +37,39 @@ const switchToRaceScene = () => {
   currentScene = raceScene;
   currentScene.initialize();
 };
-currentScene = mainMenuScene;
+currentScene = raceScene;
 
 const render = () => {
   currentScene.update();
   renderer.render(currentScene, mainCamera);
   requestAnimationFrame(render);
 };
-(
-  document.querySelector("#playGameButton") as HTMLInputElement
-).onclick = () => {
- switchToRaceScene();
-};
+(document.querySelector("#playGameButton") as HTMLInputElement).onclick =
+  () => {
+    switchToRaceScene();
+  };
 const main = async () => {
   await raceScene.load();
-  await mainMenuScene.load();
+ // await mainMenuScene.load();
   (document.querySelector(".loader-container") as HTMLElement).style.display =
     "none";
   currentScene.initialize();
-render();
+  render();
 };
 
 main();
 
+(document.querySelector("#quitGameButton") as HTMLInputElement).onclick =
+  () => {
+    (
+      document.getElementById("gamePausedModal") as HTMLInputElement
+    ).style.display = "none";
+    switchToMainMenuScene();
+  };
 
-
-(document.querySelector("#quitGameButton") as HTMLInputElement).onclick = () => {
-  (
-    document.getElementById("gamePausedModal") as HTMLInputElement
-  ).style.display = "none"; 
-  switchToMainMenuScene();
-};
-
-(document.querySelector("#closeGamePausedModal") as HTMLInputElement).onclick = () => {
-  (
-    document.getElementById("gamePausedModal") as HTMLInputElement
-  ).style.display = "none"; 
-};
-
+(document.querySelector("#closeGamePausedModal") as HTMLInputElement).onclick =
+  () => {
+    (
+      document.getElementById("gamePausedModal") as HTMLInputElement
+    ).style.display = "none";
+  };

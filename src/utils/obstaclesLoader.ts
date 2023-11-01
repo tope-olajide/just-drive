@@ -37,3 +37,27 @@ export const loadObstacleOne = (bus:Object3D, taxi:Object3D) => {
     return meshGroup
 }
 
+export const loadCoin = async () => {
+    const coin = await fbxLoader.loadAsync('./assets/Coin.fbx');
+    return coin
+}
+
+export const loadGroupACoins =  (coin:Object3D) => {
+    
+    const coinsGroup = new Group();
+    for (let i = 0; i < 5; i += 1) {
+        const laneACoin = coin.clone();
+        const laneBCoin = coin.clone();
+        const laneCCoin = coin.clone();
+        const laneDCoin = coin.clone();
+        laneACoin.position.set(-0.15, -0.06, -i * 0.16);
+        laneBCoin.position.set(-0.04, -0.06, -i * 0.16);
+        laneCCoin.position.set(0.16, -0.06, -i * 0.16);
+        laneDCoin.position.set(0.05, -0.06, -i * 0.16);
+        
+        coinsGroup.add(laneACoin, laneBCoin, laneCCoin, laneDCoin);
+      }
+      coinsGroup.position.set(0, 0, -1);
+      return coinsGroup
+
+}

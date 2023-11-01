@@ -15,10 +15,10 @@ import { mainCamera } from "../main";
 import TWEEN, { Tween } from "@tweenjs/tween.js";
 
 import { mainRoad } from "../utils/mainRoad";
-import { citySkyBox } from "../utils/skybox";
+//import { citySkyBox } from "../utils/skybox";
 import { loadBlock } from "../utils/buildingBlockLoader";
 import { loadCar } from "../utils/raceCarLoader";
-import { loadObstacleOne, loadRoadObstacle } from "../utils/obstaclesLoader";
+import { loadCoin, loadGroupACoins, loadObstacleOne, loadRoadObstacle } from "../utils/obstaclesLoader";
 
 export default class RaceScene extends Scene {
   private mainRoad = new Object3D();
@@ -40,20 +40,21 @@ export default class RaceScene extends Scene {
     new MeshPhongMaterial({ color: 0x0000ff })
   );
 
-  private pooledBuildingBlocks = <Array<Object3D>>[];
   private pooledObstacles = <Array<Object3D>>[];
+  private pooledCoins = <Array<Object3D>>[];
   private amountToPool = 4;
   private bus = new Object3D();
   private taxi = new Object3D();
-
+private coin = new Object3D();
   private obstacleOne = new Group();
+  private groupACoins = new Group();
   private isGamePaused = false;
   async load() {
     this.mainRoad = await mainRoad();
-    this.skyBox = await citySkyBox();
+    //this.skyBox = await citySkyBox();
 
-    this.skyBox.position.set(0, 0, 0);
-    this.add(this.skyBox);
+    //this.skyBox.position.set(0, 0, 0);
+    //this.add(this.skyBox);
     this.buildingBlockA = await loadBlock("BuildingBlockA");
     this.buildingBlockB = await loadBlock("BuildingBlockB");
     this.buildingBlockC = await loadBlock("BuildingBlockC");
@@ -65,7 +66,13 @@ export default class RaceScene extends Scene {
     this.taxi = await loadRoadObstacle("Taxi");
     this.taxi.scale.set(0.00017, 0.00017, 0.00017);
 
+    this.coin = await loadCoin()
+    this.coin.scale.set(0.00016, 0.00016, 0.00016)
+    this.coin.rotation.set(90 * (Math.PI / 180), 0, 150 * (Math.PI / 180));
+
     this.obstacleOne = loadObstacleOne(this.bus, this.taxi);
+    this.groupACoins = loadGroupACoins(this.coin);
+
     (document.querySelector('.pause-button') as HTMLInputElement).onclick = () => {
       this.pauseAndResumeGame();
     };
@@ -77,40 +84,6 @@ export default class RaceScene extends Scene {
     };
   }
 
-  /*  private poolBuildingBlocks() {
-    for (let i = 0; i < this.amountToPool; i++) {
-      const buildingBlockA = this.buildingBlockA.clone();
-      const buildingBlockB = this.buildingBlockB.clone();
-      const buildingBlockC = this.buildingBlockC.clone();
-      const buildingBlockD = this.buildingBlockD.clone();
-
-      buildingBlockA.scale.set(0.009, 0.009, 0.009);
-      buildingBlockB.scale.set(0.009, 0.009, 0.009);
-      buildingBlockC.scale.set(0.009, 0.009, 0.009);
-      buildingBlockD.scale.set(0.009, 0.009, 0.009);
-
-      buildingBlockA.position.set(0, -5, 0);
-      buildingBlockB.position.set(0, -5, 0);
-      buildingBlockC.position.set(0, -5, 0);
-      buildingBlockD.position.set(0, -5, 0);
-
-      buildingBlockA.visible = false;
-      buildingBlockB.visible = false;
-      buildingBlockC.visible = false;
-      buildingBlockD.visible = false;
-
-      this.pooledBuildingBlocks.push(
-        buildingBlockA,
-        buildingBlockB,
-        buildingBlockC,
-        buildingBlockD
-      );
-      this.add(buildingBlockA);
-      this.add(buildingBlockB);
-      this.add(buildingBlockC);
-      this.add(buildingBlockC);
-    }
-  } */
 
   private poolObstacles() {
     for (let i = 0; i < this.amountToPool; i++) { 
@@ -120,8 +93,24 @@ export default class RaceScene extends Scene {
       this.pooledObstacles.push(obstacleOne);
     }
   }
+  private poolCoins() {
+    for (let i = 0; i < this.amountToPool; i++) { 
+      const coinGroupA = this.groupACoins.clone();
+      coinGroupA.visible = false;
+      this.add(coinGroupA)
+      this.pooledCoins.push(coinGroupA);
+    }
+  }
   private getRandomPooledObstacle() {
     const availableItems = this.pooledObstacles.filter(item => !item.visible);
+    if (availableItems.length > 0) {
+      const randomIndex = Math.floor(Math.random() * availableItems.length);
+      return availableItems[randomIndex];
+    }
+    return null;
+  }
+  private getRandomPooledCoin() {
+    const availableItems = this.pooledCoins.filter(item => !item.visible);
     if (availableItems.length > 0) {
       const randomIndex = Math.floor(Math.random() * availableItems.length);
       return availableItems[randomIndex];
@@ -136,36 +125,56 @@ export default class RaceScene extends Scene {
       obstacle.visible = true
     }
   }
+
+  private spawnCoins() {
+    const coins = this.getRandomPooledCoin()
+    if (coins) {
+      coins.position.z = -5
+      coins.visible = true
+    }
+  }
   
   private moveObstacle() {
-   
       for (let i = 0; i < this.pooledObstacles.length; i++) {
         if (this.pooledObstacles[i].visible) {
           this.pooledObstacles[i].position.z += this.speed * this.delta;
           if (this.pooledObstacles[i].position.z > 0.5) {
             this.pooledObstacles[i].visible = false;
-            this.pooledObstacles[i].position.set(0, 0, 0);
-            
+            this.pooledObstacles[i].position.set(0, 0, 0); 
           }
           if (this.pooledObstacles[i].position.z > -5) {
             this.spawnObstacle()
-            
           }
           console.log(this.pooledObstacles[i].position.z)
-          //  0.01
-          
-
         }
       }
-    
   }
+
+  private moveCoins() {
+    for (let i = 0; i < this.pooledCoins.length; i++) {
+      if (this.pooledCoins[i].visible) {
+        this.pooledCoins[i].position.z += this.speed * this.delta;
+        if (this.pooledCoins[i].position.z > 0.5) {
+          this.pooledCoins[i].visible = false;
+          this.pooledCoins[i].position.set(0, 0, 0); 
+        }
+        if (this.pooledCoins[i].position.z > -5) {
+          this.spawnCoins()
+        }
+        console.log(this.pooledCoins[i].position.z)
+      }
+    }
+}
 
   initialize() {
     const ambient = new AmbientLight("#3F4A59", 2);
     this.add(ambient);
     this.poolObstacles()
-    console.log(this.pooledObstacles.length)
+    this.poolCoins()
+    
+    console.log(this.poolCoins.length)
     this.spawnObstacle()
+    this.spawnCoins()
     const light = new DirectionalLight(0xffffff, 1);
     light.position.set(0, 2, 1);
     this.add(light);
@@ -356,7 +365,7 @@ export default class RaceScene extends Scene {
 
     this.mainRoad.position.z += this.speed * this.delta;
     this.mainRoadClone.position.z += this.speed * this.delta;
-    this.skyBox.rotation.y += 0.006 * this.delta;
+    //this.skyBox.rotation.y += 0.006 * this.delta;
 
     this.buildingBlockA.position.z += this.speed * this.delta;
     this.buildingBlockB.position.z += this.speed * this.delta;
@@ -396,6 +405,7 @@ export default class RaceScene extends Scene {
       this.mainRoadClone.position.z = this.mainRoad.position.z - this.roadSize;
     }
     this.moveObstacle()
+    this.moveCoins()
   }
   hide() {
 

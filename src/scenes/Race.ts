@@ -9,13 +9,14 @@ import {
   Box3,
   MeshPhongMaterial,
   Group,
+  Vector3,
 } from "three";
 
 import { mainCamera } from "../main";
 import TWEEN, { Tween } from "@tweenjs/tween.js";
 
 import { mainRoad } from "../utils/mainRoad";
-//import { citySkyBox } from "../utils/skybox";
+import { citySkyBox } from "../utils/skybox";
 import { loadBlock } from "../utils/buildingBlockLoader";
 import { loadCar } from "../utils/raceCarLoader";
 import { loadCoin, loadGroupACoins, loadObstacleOne, loadRoadObstacle } from "../utils/obstaclesLoader";
@@ -49,12 +50,20 @@ private coin = new Object3D();
   private obstacleOne = new Group();
   private groupACoins = new Group();
   private isGamePaused = false;
+  private playerBoxCollider = new Box3(new Vector3(), new Vector3());
+  private obstacleBox = new Box3(new Vector3(), new Vector3());
+  private coinBox = new Box3(new Vector3(), new Vector3());
+
+  private scores = 0;
+
+  private coins = 0;
+
   async load() {
     this.mainRoad = await mainRoad();
-    //this.skyBox = await citySkyBox();
+    this.skyBox = await citySkyBox();
 
-    //this.skyBox.position.set(0, 0, 0);
-    //this.add(this.skyBox);
+    this.skyBox.position.set(0, 0, 0);
+    this.add(this.skyBox);
     this.buildingBlockA = await loadBlock("BuildingBlockA");
     this.buildingBlockB = await loadBlock("BuildingBlockB");
     this.buildingBlockC = await loadBlock("BuildingBlockC");
@@ -82,6 +91,8 @@ private coin = new Object3D();
     (document.getElementById('resumeGameButton') as HTMLInputElement).onclick = () => {
       this.pauseAndResumeGame();
     };
+    
+   
   }
 
 
@@ -133,11 +144,13 @@ private coin = new Object3D();
       coins.visible = true
     }
   }
-  
+
   private moveObstacle() {
       for (let i = 0; i < this.pooledObstacles.length; i++) {
         if (this.pooledObstacles[i].visible) {
+          
           this.pooledObstacles[i].position.z += this.speed * this.delta;
+          this.detectCollisionWithObstacles(this.pooledObstacles[i])
           if (this.pooledObstacles[i].position.z > 0.5) {
             this.pooledObstacles[i].visible = false;
             this.pooledObstacles[i].position.set(0, 0, 0); 
@@ -145,44 +158,92 @@ private coin = new Object3D();
           if (this.pooledObstacles[i].position.z > -5) {
             this.spawnObstacle()
           }
-          console.log(this.pooledObstacles[i].position.z)
+        //  console.log(this.pooledObstacles[i].position.z)
         }
       }
+  }
+
+  private detectCollisionWithObstacles(activeObstacle: Object3D) {
+    
+    for (let i = 0; i < activeObstacle.children.length; i += 1) {
+      this.obstacleBox.setFromObject(activeObstacle.children[i]);
+      if (this.playerBoxCollider.intersectsBox(this.obstacleBox)) {
+        this.gameOver();
+      }
+    }
+
+  }
+   private detectCollisionWithCoins(activeCoinsGroup: Object3D) {
+    for (let i = 0; i < activeCoinsGroup.children.length; i += 1) {
+      this.coinBox.setFromObject(activeCoinsGroup.children[i]);
+      if (this.playerBoxCollider.intersectsBox(this.coinBox)) {
+        activeCoinsGroup.children[i].position.z += 100;
+        activeCoinsGroup.children[i].visible = false;
+        
+        if (!this.isGamePaused /* && !this.isGameOver */) {
+          
+          this.coins += 0.25;
+          console.log( this.coins)
+        }
+        (document.querySelector('.coins-count') as HTMLInputElement).innerHTML = `${Math.round(this.coins)}`;
+        setTimeout(() => {
+          activeCoinsGroup.children[i].position.z -= 100;
+          
+        }, 100);
+      }
+    }
+  } 
+  private displayCoinsChildren(parent:Object3D) {
+    for (let i = 0; i < parent.children.length; i += 1) {
+      if (!parent.children[i].visible) {
+        parent.children[i].visible = true;
+      }
+    } 
   }
 
   private moveCoins() {
     for (let i = 0; i < this.pooledCoins.length; i++) {
       if (this.pooledCoins[i].visible) {
         this.pooledCoins[i].position.z += this.speed * this.delta;
+        this.detectCollisionWithCoins(this.pooledCoins[i])
         if (this.pooledCoins[i].position.z > 0.5) {
+
           this.pooledCoins[i].visible = false;
+          this.displayCoinsChildren(this.pooledCoins[i])
           this.pooledCoins[i].position.set(0, 0, 0); 
         }
         if (this.pooledCoins[i].position.z > -5) {
+          
           this.spawnCoins()
         }
-        console.log(this.pooledCoins[i].position.z)
+        
       }
     }
-}
+  }
+  
+  private gameOver() {
+    console.log('game over')
+    this.clock.stop();
+    (document.getElementById('gameOverModal') as HTMLInputElement).style.display = 'flex';
+  }
 
   initialize() {
-    const ambient = new AmbientLight("#3F4A59", 2);
+    const ambient = new AmbientLight("#3F4A59", 3);
     this.add(ambient);
     this.poolObstacles()
     this.poolCoins()
     
-    console.log(this.poolCoins.length)
+
     this.spawnObstacle()
     this.spawnCoins()
-    const light = new DirectionalLight(0xffffff, 1);
+    const light = new DirectionalLight(0xffffff, 3);
     light.position.set(0, 2, 1);
     this.add(light);
     if (!this.visible) {
       this.visible = true;
     }
     this.clock.start();
-    
+    (document.querySelector('.race-info-section') as HTMLInputElement).style.display = 'block';
     (document.querySelector('.pause-button') as HTMLInputElement).style.display = 'block';
     this.buildingBlockA.position.set(-0.45, -0.088, -1.6);
     this.buildingBlockA.scale.set(0.02, 0.009, 0.015);
@@ -221,7 +282,7 @@ private coin = new Object3D();
     this.roadSize = roadBox.max.z - roadBox.min.z - 0.01;
 
     this.mainRoadClone.position.z = this.mainRoad.position.z - this.roadSize;
-    console.log(this.mainRoadClone.position.z);
+
 
     this.add(this.mainRoadClone);
 
@@ -297,9 +358,11 @@ private coin = new Object3D();
   };
   private pauseAndResumeGame() {
     if (!this.isGamePaused) {
+      this.clock.stop();
       (document.getElementById('gamePausedModal') as HTMLInputElement).style.display = 'flex';
       this.isGamePaused = true;
     } else {
+      this.clock.start();
       (document.getElementById('gamePausedModal') as HTMLInputElement).style.display = 'none';
       this.isGamePaused = false;
     }
@@ -363,9 +426,14 @@ private coin = new Object3D();
     this.delta = this.clock.getDelta();
     TWEEN.update();
 
+    this.scores += Math.round(this.speed * this.delta +1);
+    (document.querySelector('.scores-count') as HTMLInputElement).innerHTML = this.scores.toString();
+    
+
+    this.playerBoxCollider.setFromObject(this.ferrari);
     this.mainRoad.position.z += this.speed * this.delta;
     this.mainRoadClone.position.z += this.speed * this.delta;
-    //this.skyBox.rotation.y += 0.006 * this.delta;
+    this.skyBox.rotation.y += 0.006 * this.delta;
 
     this.buildingBlockA.position.z += this.speed * this.delta;
     this.buildingBlockB.position.z += this.speed * this.delta;
@@ -408,8 +476,9 @@ private coin = new Object3D();
     this.moveCoins()
   }
   hide() {
-
+    
     (document.querySelector('.pause-button') as HTMLInputElement).style.display = 'none';
+    (document.querySelector('.race-info-section') as HTMLInputElement).style.display = 'none';
     this.visible = false;
     this.clock.stop()
 

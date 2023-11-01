@@ -37,7 +37,7 @@ const switchToRaceScene = () => {
   currentScene = raceScene;
   currentScene.initialize();
 };
-currentScene = raceScene;
+currentScene = mainMenuScene;
 
 const render = () => {
   currentScene.update();
@@ -50,7 +50,7 @@ const render = () => {
   };
 const main = async () => {
   await raceScene.load();
- // await mainMenuScene.load();
+  await mainMenuScene.load();
   (document.querySelector(".loader-container") as HTMLElement).style.display =
     "none";
   currentScene.initialize();
@@ -67,9 +67,26 @@ main();
     switchToMainMenuScene();
   };
 
+  (document.querySelector("#exitGameButton") as HTMLInputElement).onclick =
+  () => {
+    (
+      document.getElementById("gameOverModal") as HTMLInputElement
+    ).style.display = "none";
+    switchToMainMenuScene();
+  };
+
 (document.querySelector("#closeGamePausedModal") as HTMLInputElement).onclick =
   () => {
     (
       document.getElementById("gamePausedModal") as HTMLInputElement
     ).style.display = "none";
   };
+
+
+
+
+  document
+  .getElementById("competitionButton")
+  .addEventListener("click", function () {
+    alert("ddddddddd");
+  });

@@ -50,14 +50,17 @@ export const loadGroupACoins =  (coin:Object3D) => {
         const laneBCoin = coin.clone();
         const laneCCoin = coin.clone();
         const laneDCoin = coin.clone();
-        laneACoin.position.set(-0.15, -0.06, -i * 0.16);
-        laneBCoin.position.set(-0.04, -0.06, -i * 0.16);
-        laneCCoin.position.set(0.16, -0.06, -i * 0.16);
-        laneDCoin.position.set(0.05, -0.06, -i * 0.16);
+        laneACoin.position.set(-0.15, -0.06, -i * 0.26);
+        laneBCoin.position.set(-0.04, -0.06, -i * 0.26);
+        laneCCoin.position.set(0.16, -0.06, -i * 0.26);
+        laneDCoin.position.set(0.05, -0.06, -i * 0.26);
         
-        coinsGroup.add(laneACoin, laneBCoin, laneCCoin, laneDCoin);
+        coinsGroup.add(laneACoin);
+        coinsGroup.add(laneBCoin);
+        coinsGroup.add(laneCCoin);
+        coinsGroup.add(laneDCoin);
       }
-      coinsGroup.position.set(0, 0, -1);
+      coinsGroup.position.set(0, 0, -10);
       return coinsGroup
 
 }

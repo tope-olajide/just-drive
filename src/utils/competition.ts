@@ -116,11 +116,7 @@ const subscribeToAChannel = () => {
 }
 
 
-document
-  .getElementById("competitionButton")
-  .addEventListener("click", function () {
-    alert("ddddddddd");
-  });
+
 
 document
   .getElementById("createCompetitionButton")

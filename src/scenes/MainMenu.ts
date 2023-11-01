@@ -65,6 +65,13 @@ export default class MainMenuScene extends Scene {
         this.taxi.scale.set(0.00017, 0.00017, 0.00017);
   
         this.obstacleOne = loadObstacleOne(this.bus, this.taxi);
+        mainCamera.rotation.set(0,0,0);
+  
+        const light = new DirectionalLight(0xffffff, 3);
+        light.position.set(0, 2, 1);
+        this.add(light);
+        const ambient = new AmbientLight("#3F4A59", 3);
+        this.add(ambient);
     }
   
     /*  private poolBuildingBlocks() {
@@ -108,14 +115,9 @@ export default class MainMenuScene extends Scene {
         }
         (document.querySelector('.menu-buttons-container') as HTMLInputElement).style.display = 'flex';
         (document.querySelector('.info-section') as HTMLInputElement).style.display = 'block';
-        const ambient = new AmbientLight("#3F4A59", 6);
-        this.add(ambient);
+        
 
-        mainCamera.rotation.set(0,0,0);
-  
-        const light = new DirectionalLight(0xffffff, 5);
-        light.position.set(0, 2, 1);
-        this.add(light);
+        
   
         this.buildingBlockA.position.set(-0.45, -0.088, -1.6);
         this.buildingBlockA.scale.set(0.02, 0.009, 0.015);

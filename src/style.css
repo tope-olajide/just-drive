@@ -271,3 +271,16 @@ flex-direction: column;
 #gamePausedModal{
   display: none;
 }
+
+.race-info-section{
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 10px;
+  
+}
+
+#gameOverModal{
+  display: none;
+}

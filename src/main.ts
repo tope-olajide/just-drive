@@ -2,10 +2,12 @@ import { WebGLRenderer, PerspectiveCamera } from "three";
 
 import RaceScene from "./scenes/Race";
 import MainMenuScene from "./scenes/MainMenu";
+import { copyToClipboard, subscribeToAChannel } from "./utils/competition";
+import TournamentScene from "./scenes/Tournament";
 const width = window.innerWidth;
 const height = window.innerHeight;
 
-let currentScene: MainMenuScene | RaceScene;
+let currentScene: MainMenuScene | RaceScene | TournamentScene;
 
 const renderer = new WebGLRenderer({
   canvas: document.getElementById("app") as HTMLCanvasElement,
@@ -25,6 +27,7 @@ window.addEventListener("resize", onWindowResize);
 
 const raceScene = new RaceScene();
 const mainMenuScene = new MainMenuScene();
+const tournamentScene = new TournamentScene();
 
 const switchToMainMenuScene = () => {
   currentScene.hide();
@@ -35,6 +38,11 @@ const switchToMainMenuScene = () => {
 const switchToRaceScene = () => {
   currentScene.hide();
   currentScene = raceScene;
+  currentScene.initialize();
+};
+const switchToTournamentScene = () => {
+  currentScene.hide();
+  currentScene = tournamentScene;
   currentScene.initialize();
 };
 currentScene = mainMenuScene;
@@ -48,8 +56,16 @@ const render = () => {
   () => {
     switchToRaceScene();
   };
+
+  (document.querySelector("#startTournamentButton") as HTMLInputElement).onclick =
+    () => {
+      switchToTournamentScene();
+    (document.getElementById('competitionModal') as HTMLButtonElement).style.display = 'none';
+  };
+
 const main = async () => {
   await raceScene.load();
+  await tournamentScene.load();
   await mainMenuScene.load();
   (document.querySelector(".loader-container") as HTMLElement).style.display =
     "none";
@@ -64,6 +80,7 @@ main();
     (
       document.getElementById("gamePausedModal") as HTMLInputElement
     ).style.display = "none";
+    
     switchToMainMenuScene();
   };
 
@@ -84,9 +101,28 @@ main();
 
 
 
+  (document.querySelector("#competitionButton") as HTMLInputElement).onclick =
+  () => {
+    (document.getElementById('competitionModal') as HTMLButtonElement).style.display = 'flex';
+  };
 
-  document
-  .getElementById("competitionButton")
-  .addEventListener("click", function () {
-    alert("ddddddddd");
-  });
+  (document.querySelector("#createCompetitionButton") as HTMLInputElement).onclick =
+  () => {
+    subscribeToAChannel()
+  };
+  (document.querySelector("#copyLinkButton") as HTMLInputElement).onclick =
+  () => {
+    copyToClipboard()
+  };
+
+  (document.querySelector("#joinTournamentButton") as HTMLInputElement).onclick =
+    () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const spaceParam = urlParams?.get('space') || '';
+      console.log(spaceParam)
+      subscribeToAChannel(spaceParam)
+      switchToTournamentScene();
+      (document.getElementById('tournamentInvitationModal') as HTMLButtonElement).style.display = 'none';
+      
+  };
+ 

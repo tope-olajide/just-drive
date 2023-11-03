@@ -26,7 +26,7 @@ export default class RaceScene extends Scene {
   private mainRoadClone = new Object3D();
   private roadSize = 0;
   private buildingBlocKSize = 0;
-
+  private isPlayerHeadStart = false;
   private speed = 1;
   private clock = new Clock();
   private delta = 0;
@@ -57,6 +57,8 @@ private coin = new Object3D();
   private scores = 0;
 
   private coins = 0;
+
+  private isGameOver = false;
 
   async load() {
     this.mainRoad = await mainRoad();
@@ -91,10 +93,60 @@ private coin = new Object3D();
     (document.getElementById('resumeGameButton') as HTMLInputElement).onclick = () => {
       this.pauseAndResumeGame();
     };
-    
-   
-  }
 
+    this.buildingBlockA.position.set(-0.45, -0.088, -1.6);
+    this.buildingBlockA.scale.set(0.02, 0.009, 0.015);
+    this.add(this.buildingBlockA);
+
+    this.buildingBlockB.position.set(-0.45, -0.088, -1.6);
+    this.buildingBlockB.scale.set(0.02, 0.009, 0.015);
+    this.add(this.buildingBlockB);
+
+    this.buildingBlockC.position.set(0.45, -0.088, -2.9);
+    this.buildingBlockC.rotation.set(0, 600.05, 0);
+    this.buildingBlockC.scale.set(0.02, 0.009, 0.015);
+    this.add(this.buildingBlockC);
+
+    this.buildingBlockD.position.set(0.45, -0.088, -2.9);
+    this.buildingBlockD.rotation.set(0, 600.05, 0);
+    this.buildingBlockD.scale.set(0.02, 0.009, 0.015);
+    this.add(this.buildingBlockD);
+
+    this.mainRoad.position.set(0, -0.1, -2.1);
+    this.mainRoad.scale.set(0.04, 0.04, 0.04);
+    this.add(this.mainRoad);
+
+    this.mainRoadClone = this.mainRoad.clone();
+
+    const roadBox = new Box3().setFromObject(this.mainRoad);
+    const buildingBlockBox = new Box3().setFromObject(this.buildingBlockD);
+    this.buildingBlocKSize = buildingBlockBox.max.z - buildingBlockBox.min.z;
+
+    this.buildingBlockA.position.z =
+      this.buildingBlockB.position.z - this.buildingBlocKSize;
+    this.buildingBlockC.position.z =
+      this.buildingBlockD.position.z - this.buildingBlocKSize;
+
+    this.roadSize = roadBox.max.z - roadBox.min.z - 0.01;
+
+    this.mainRoadClone.position.z = this.mainRoad.position.z - this.roadSize;
+
+
+    this.add(this.mainRoadClone);
+
+    this.poolObstacles()
+    this.poolCoins()
+
+    const ambient = new AmbientLight("#3F4A59", 3);
+    this.add(ambient);
+    
+    
+
+    
+    const light = new DirectionalLight(0xffffff, 3);
+    light.position.set(0, 2, 1);
+    this.add(light);
+  }
 
   private poolObstacles() {
     for (let i = 0; i < this.amountToPool; i++) { 
@@ -163,6 +215,16 @@ private coin = new Object3D();
       }
   }
 
+  private resetObstacle() {
+    for (let i = 0; i < this.pooledObstacles.length; i++) {
+      if (this.pooledObstacles[i].visible) {
+        this.pooledObstacles[i].visible = false;
+       this.pooledObstacles[i].position.set(0, 0, 0); 
+      }
+    }
+  }
+  
+
   private detectCollisionWithObstacles(activeObstacle: Object3D) {
     
     for (let i = 0; i < activeObstacle.children.length; i += 1) {
@@ -180,7 +242,7 @@ private coin = new Object3D();
         activeCoinsGroup.children[i].position.z += 100;
         activeCoinsGroup.children[i].visible = false;
         
-        if (!this.isGamePaused /* && !this.isGameOver */) {
+        if (!this.isGamePaused  && !this.isGameOver ) {
           
           this.coins += 0.25;
           console.log( this.coins)
@@ -220,71 +282,45 @@ private coin = new Object3D();
       }
     }
   }
+
+  private resetCoins() {
+    for (let i = 0; i < this.pooledCoins.length; i++) {
+      if (this.pooledCoins[i].visible) {
+          this.pooledCoins[i].visible = false;
+          this.displayCoinsChildren(this.pooledCoins[i])
+        this.pooledCoins[i].position.set(0, 0, 0); 
+        
+      }
+    }
+  }
   
   private gameOver() {
     console.log('game over')
+    this.isGameOver = true
     this.clock.stop();
     (document.getElementById('gameOverModal') as HTMLInputElement).style.display = 'flex';
   }
 
   initialize() {
-    const ambient = new AmbientLight("#3F4A59", 3);
-    this.add(ambient);
-    this.poolObstacles()
-    this.poolCoins()
-    
-
-    this.spawnObstacle()
+    const urlParams = new URLSearchParams(window.location.search);
+    const spaceParam = urlParams.get('space');
+    if (spaceParam) {
+      
+    }
+    setTimeout(() => {
+ 
+      this.spawnObstacle()
     this.spawnCoins()
-    const light = new DirectionalLight(0xffffff, 3);
-    light.position.set(0, 2, 1);
-    this.add(light);
+      this.isPlayerHeadStart = true;
+    }, 4000);
+  
     if (!this.visible) {
       this.visible = true;
     }
     this.clock.start();
     (document.querySelector('.race-info-section') as HTMLInputElement).style.display = 'block';
     (document.querySelector('.pause-button') as HTMLInputElement).style.display = 'block';
-    this.buildingBlockA.position.set(-0.45, -0.088, -1.6);
-    this.buildingBlockA.scale.set(0.02, 0.009, 0.015);
-    this.add(this.buildingBlockA);
 
-    this.buildingBlockB.position.set(-0.45, -0.088, -1.6);
-    this.buildingBlockB.scale.set(0.02, 0.009, 0.015);
-    this.add(this.buildingBlockB);
-
-    this.buildingBlockC.position.set(0.45, -0.088, -2.9);
-    this.buildingBlockC.rotation.set(0, 600.05, 0);
-    this.buildingBlockC.scale.set(0.02, 0.009, 0.015);
-    this.add(this.buildingBlockC);
-
-    this.buildingBlockD.position.set(0.45, -0.088, -2.9);
-    this.buildingBlockD.rotation.set(0, 600.05, 0);
-    this.buildingBlockD.scale.set(0.02, 0.009, 0.015);
-    this.add(this.buildingBlockD);
-
-    this.mainRoad.position.set(0, -0.1, -2.1);
-    this.mainRoad.scale.set(0.04, 0.04, 0.04);
-    //this.mainRoadClone.position.set(0, -0.1, -10);
-    this.add(this.mainRoad);
-
-    this.mainRoadClone = this.mainRoad.clone();
-
-    const roadBox = new Box3().setFromObject(this.mainRoad);
-    const buildingBlockBox = new Box3().setFromObject(this.buildingBlockD);
-    this.buildingBlocKSize = buildingBlockBox.max.z - buildingBlockBox.min.z;
-
-    this.buildingBlockA.position.z =
-      this.buildingBlockB.position.z - this.buildingBlocKSize;
-    this.buildingBlockC.position.z =
-      this.buildingBlockD.position.z - this.buildingBlocKSize;
-
-    this.roadSize = roadBox.max.z - roadBox.min.z - 0.01;
-
-    this.mainRoadClone.position.z = this.mainRoad.position.z - this.roadSize;
-
-
-    this.add(this.mainRoadClone);
 
     this.playerBox.scale.set(0.01, 0.01, 0.02);
     this.playerBox.position.set(-0.015, -0.047, -0.18);
@@ -422,12 +458,18 @@ private coin = new Object3D();
     console.log(this.ferrari.position.x);
     //   }
   }
+
+
+
   update() {
     this.delta = this.clock.getDelta();
     TWEEN.update();
-
-    this.scores += Math.round(this.speed * this.delta +1);
-    (document.querySelector('.scores-count') as HTMLInputElement).innerHTML = this.scores.toString();
+    if (!this.isGameOver && !this.isGamePaused) {
+      this.scores += Math.round(this.speed * this.delta + 1);
+      (document.querySelector('.scores-count') as HTMLInputElement).innerHTML = this.scores.toString();
+}
+    
+    
     
 
     this.playerBoxCollider.setFromObject(this.ferrari);
@@ -472,8 +514,12 @@ private coin = new Object3D();
     if (this.mainRoadClone.position.z > 4.1) {
       this.mainRoadClone.position.z = this.mainRoad.position.z - this.roadSize;
     }
-    this.moveObstacle()
-    this.moveCoins()
+ 
+    if (this.isPlayerHeadStart) {
+      this.moveObstacle()
+      this.moveCoins()
+    }
+
   }
   hide() {
     
@@ -481,6 +527,15 @@ private coin = new Object3D();
     (document.querySelector('.race-info-section') as HTMLInputElement).style.display = 'none';
     this.visible = false;
     this.clock.stop()
+
+    this.resetObstacle();
+    this.resetCoins()
+    this.scores = 0;
+    (document.querySelector('.scores-count') as HTMLInputElement).innerHTML = this.scores.toString();
+    
+    this.coins = 0;
+    (document.querySelector('.coins-count') as HTMLInputElement).innerHTML = this.coins.toString()
+    this.isGameOver = false;
 
    }
 }

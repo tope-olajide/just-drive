@@ -237,7 +237,7 @@ flex-direction: column;
   animation: spin 1s linear infinite;
   text-align: center;
 }
-#newCompetitionSpinner, #copyLinkButton, #startGameButton{
+#newCompetitionSpinner, #copyLinkButton, #startTournamentButton{
   display: none;
 }
 
@@ -282,5 +282,19 @@ flex-direction: column;
 }
 
 #gameOverModal{
+  display: none;
+}
+
+#liveScoreBoard{
+  display: block;
+  position: absolute;
+  
+  right: 0;
+  margin: 150px 10px;
+  font-size:25px;
+  color: #fff;
+}
+
+#tournamentInvitationModal{
   display: none;
 }

@@ -25,7 +25,7 @@ export default class MainMenuScene extends Scene {
     private mainRoadClone = new Object3D();
     private roadSize = 0;
     private buildingBlocKSize = 0;
-  
+    
     private speed = 1;
     private clock = new Clock();
     private delta = 0;
@@ -73,52 +73,19 @@ export default class MainMenuScene extends Scene {
         const ambient = new AmbientLight("#3F4A59", 3);
         this.add(ambient);
     }
-  
-    /*  private poolBuildingBlocks() {
-      for (let i = 0; i < this.amountToPool; i++) {
-        const buildingBlockA = this.buildingBlockA.clone();
-        const buildingBlockB = this.buildingBlockB.clone();
-        const buildingBlockC = this.buildingBlockC.clone();
-        const buildingBlockD = this.buildingBlockD.clone();
-  
-        buildingBlockA.scale.set(0.009, 0.009, 0.009);
-        buildingBlockB.scale.set(0.009, 0.009, 0.009);
-        buildingBlockC.scale.set(0.009, 0.009, 0.009);
-        buildingBlockD.scale.set(0.009, 0.009, 0.009);
-  
-        buildingBlockA.position.set(0, -5, 0);
-        buildingBlockB.position.set(0, -5, 0);
-        buildingBlockC.position.set(0, -5, 0);
-        buildingBlockD.position.set(0, -5, 0);
-  
-        buildingBlockA.visible = false;
-        buildingBlockB.visible = false;
-        buildingBlockC.visible = false;
-        buildingBlockD.visible = false;
-  
-        this.pooledBuildingBlocks.push(
-          buildingBlockA,
-          buildingBlockB,
-          buildingBlockC,
-          buildingBlockD
-        );
-        this.add(buildingBlockA);
-        this.add(buildingBlockB);
-        this.add(buildingBlockC);
-        this.add(buildingBlockC);
-      }
-    } */
-  
+
     initialize() {
         if (!this.visible) {
             this.visible = true;
         }
+        const urlParams = new URLSearchParams(window.location.search);
+        const spaceParam = urlParams.get('space');
+        if (spaceParam) {
+            (document.querySelector('#tournamentInvitationModal') as HTMLInputElement).style.display = 'flex';
+         }
         (document.querySelector('.menu-buttons-container') as HTMLInputElement).style.display = 'flex';
         (document.querySelector('.info-section') as HTMLInputElement).style.display = 'block';
-        
 
-        
-  
         this.buildingBlockA.position.set(-0.45, -0.088, -1.6);
         this.buildingBlockA.scale.set(0.02, 0.009, 0.015);
         this.add(this.buildingBlockA);
@@ -177,60 +144,14 @@ export default class MainMenuScene extends Scene {
             if (e.key === "ArrowLeft") {
                 this.moveLeft();
             }
-            if (e.key === " ") {
-                console.log(this.playerBox.position);
-            }
+           
             if (e.key === "ArrowRight") {
                 this.moveRight();
             }
-            if (e.key === "a") {
-                this.moveCameraLeft();
-            }
-            if (e.key === "d") {
-                this.moveCameraRight();
-            }
-            if (e.key === "e") {
-                this.moveCameraUp();
-                //this.playerBox.position.y += 0.008;
-            }
-            if (e.key === "x") {
-                this.moveCameraDown();
-                // this.playerBox.position.y -= 0.008;
-            }
-            if (e.key === "ArrowUp") {
-                this.moveCameraForward();
-                // this.playerBox.position.z -= 0.008;
-            }
-            if (e.key === "ArrowDown") {
-                this.moveCameraBackward();
-                // this.playerBox.position.z += 0.008;
-            }
+            
         };
     }
-    private moveCameraLeft = () => {
-        mainCamera.position.x -= 0.08;
-    };
-    private moveCameraRight = () => {
-        mainCamera.position.x += 0.08;
-    };
-    private moveCameraUp = () => {
-        mainCamera.position.y += 0.08;
-        //this.playerBox.position.y += 0.008;
-    };
-    private moveCameraDown = () => {
-        mainCamera.position.y -= 0.08;
-    };
-    private moveCameraForward = () => {
-        mainCamera.position.z -= 0.08;
-        // this.mainRoad.position.z += 1;
-        //console.log(this.mainRoad.position.z);
-        // this.playerBox.position.z += 0.008;
-    };
-    private moveCameraBackward = () => {
-        mainCamera.position.z += 0.08;
-        //this.playerBox.position.z -= 0.008;
-    };
-  
+   
     private moveLeft() {
         //    if (this.ferrari.position.x !== -0.051) {
         console.log(this.ferrari.position.x);

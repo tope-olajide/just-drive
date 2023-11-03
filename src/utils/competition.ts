@@ -14,16 +14,16 @@ import {
     length: 3,
 };
 
-let apiKey = "xxxXXxxxXXxxxXXxxxXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxx";
-let username;
+let apiKey = "xxxxxx";
+let username:string="";
 
-
+let channelName: string =uniqueNamesGenerator(customConfig) 
 let joinLink = "";
 
 let ably = new Ably.Realtime({ key: apiKey });
 
     
-let channel
+export let channel: Ably.Types.RealtimeChannelCallbacks
  ably.connection.on('failed', function () {
     console.log('# failed connection')
  });
@@ -31,7 +31,7 @@ let channel
 const userScores = {};
 
 // Function to display Scores in the channel
-function displayMessage(message) {
+export function displayMessage(message) {
   const scoreListElement = document.getElementById("scoreList");
 
   const messageItem = document.createElement("p");
@@ -58,19 +58,18 @@ function updateScoreList() {
       scoreListElement.appendChild(messageItem);
     }
 }
-function copyToClipboard(url: string) {
+export function copyToClipboard() {
     const textArea = document.createElement("textarea");
-    textArea.value = url;
-  
+    textArea.value = joinLink;
     document.body.appendChild(textArea);
   
     textArea.select();
   
     try {
       navigator.clipboard
-        .writeText(url)
+        .writeText(joinLink)
         .then(function () {
-          console.log("URL copied to clipboard: " + url);
+          console.log("URL copied to clipboard: " + joinLink);
         })
         .catch(function (err) {
           console.error("Unable to copy text to clipboard: " + err);
@@ -83,57 +82,54 @@ function copyToClipboard(url: string) {
   }
 
   
-const subscribeToAChannel = () => {
-    const inputField = document.getElementById("username");
-    const username = inputField?.value.trim();
-    if (username === "") {
+export const subscribeToAChannel = (joinChannelName?: string | undefined) => {
+
+
+    const hostInputField = document.getElementById("hostUsername") 
+    const visitorInputField = document.getElementById("visitorUsername") 
+    /*  const playerName = inputField?.value.trim();
+    if (playerName === "") {
         alert("Username is empty.");
         return
     }
-    if (username.includes(" ")) {
+    if (playerName.includes(" ")) {
         alert("username must not contain a space.");
         return
-    }
+  } */
+  username = hostInputField?.value || visitorInputField?.value
+    console.log({username})
     ably.connection.on('connected', function () {
         console.log('# successful connection')
     });
         (document.getElementById('usernameSection') as HTMLInputElement).style.display = 'none';
         (document.getElementById('createCompetitionButton') as HTMLInputElement).style.display = 'block';
         console.log('# successful connection')
-        const channelName: string = uniqueNamesGenerator(customConfig);
-    channel = ably.channels.get(channelName);
-    const hostJoinLink = window.location.href.split("?")[0] + `?space=${channelName}`;
+  
+  channel = ably.channels.get(joinChannelName ? joinChannelName : channelName);
         joinLink =
-    window.location.href.split("?")[0] + `?space=${channelName}`+ `?host=${username}`;
+    window.location.href.split("?")[0] + `?space=${channelName}`;
         console.log(`Join Link: ${joinLink}`);
         (document.getElementById('createCompetitionButton') as HTMLInputElement).style.display = 'none';
         const copyLinkButton = document.querySelector(
             "#copyLinkButton"
           ) as HTMLButtonElement;
     copyLinkButton.style.display = "block";
-    (document.getElementById('startGameButton') as HTMLInputElement).style.display = 'block';
+    (document.getElementById('startTournamentButton') as HTMLInputElement).style.display = 'block';
     
 }
 
 
 
 
-document
-  .getElementById("createCompetitionButton")
-    .addEventListener("click", function () {
-        subscribeToAChannel()
-  });
-  
-  document
-  .getElementById("copyLinkButton")
-    .addEventListener("click", function () {
-        copyToClipboard(joinLink)
-    });
-  
-    
-document
-.getElementById("closeCompetitionModal")
-  .addEventListener("click", function () {
-  alert('www')
-  //(document.getElementById('competitionModal') as HTMLButtonElement).style.display = 'none';
-});
+export function startBroadcastingScore(scores:number) {
+
+    if (channel) {
+      channel.publish({
+        name: username,
+        data: String(scores + "-" + username),
+      }); // Publish the score to the channel
+      console.log(channel.name)
+      console.log(String(scores + "-" + username));
+    }
+
+}

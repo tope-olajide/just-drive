@@ -44,6 +44,7 @@ export default class MainMenuScene extends Scene {
     private amountToPool = 4;
     private bus = new Object3D();
     private taxi = new Object3D();
+    private limo = new Object3D();
   
     private obstacleOne = new Group();
   
@@ -63,6 +64,8 @@ export default class MainMenuScene extends Scene {
   
         this.taxi = await loadRoadObstacle("Taxi");
         this.taxi.scale.set(0.00017, 0.00017, 0.00017);
+
+     
   
         this.obstacleOne = loadObstacleOne(this.bus, this.taxi);
         mainCamera.rotation.set(0,0,0);
@@ -86,6 +89,11 @@ export default class MainMenuScene extends Scene {
         (document.querySelector('.menu-buttons-container') as HTMLInputElement).style.display = 'flex';
         (document.querySelector('.info-section') as HTMLInputElement).style.display = 'block';
 
+
+        (document.querySelector('.high-score') as HTMLInputElement).innerHTML = JSON.parse(localStorage.getItem('high-score')!);
+        (document.querySelector('.total-coins') as HTMLInputElement).innerHTML = JSON.parse(localStorage.getItem('total-coins')!);
+
+        
         this.buildingBlockA.position.set(-0.45, -0.088, -1.6);
         this.buildingBlockA.scale.set(0.02, 0.009, 0.015);
         this.add(this.buildingBlockA);

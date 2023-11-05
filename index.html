@@ -19,8 +19,8 @@
       </section>
 
       <section class="info-section">
-        <h1>HighScores:20000</h1>
-        <h1>Coins:1200</h1>
+        <h1> HighScores: <span class="high-score"></span></h1>
+        <h1> Coins: <span class="total-coins"></span></h1>
       </section>
 
       <section class="modal" id="competitionModal">
@@ -71,9 +71,9 @@
 
       <section class="modal" id="gameOverModal">
         <div class="modal-header">
-          <h2 class="empty-space">.</h2>
+           <h2 class="empty-space">.</h2>
           <h4>Game Over!</h4>
-          <h2 id="closeGamePausedModal">X</h2>
+          <h2 class="empty-space">.</h2>
         </div>
         <div class="modal-body" id="competitionModalBody">
           <button id="restartGameButton">Restart</button>
@@ -112,6 +112,6 @@
     
     <canvas id="app"> </canvas>
     <script type="module" src="/src/main.ts"></script>
-    <script type="module" src="src/utils/competition.ts"></script>
+    <!-- <script type="module" src="src/utils/competition.ts"></script> -->
   </body>
 </html>

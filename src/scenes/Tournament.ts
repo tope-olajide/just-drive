@@ -20,7 +20,7 @@ import {
   import { loadBlock } from "../utils/buildingBlockLoader";
   import { loadCar } from "../utils/raceCarLoader";
   import { loadCoin, loadGroupACoins, loadObstacleOne, loadRoadObstacle } from "../utils/obstaclesLoader";
-import { channel, startBroadcastingScore, displayMessage } from "../utils/competition";
+import { channel, startBroadcastingScore, displayScore } from "../utils/competition";
   
 export default class TournamentScene extends Scene {
       
@@ -85,7 +85,7 @@ export default class TournamentScene extends Scene {
       this.obstacleOne = loadObstacleOne(this.bus, this.taxi);
       this.groupACoins = loadGroupACoins(this.coin);
   
-      (document.querySelector('.pause-button') as HTMLInputElement).onclick = () => {
+   /*    (document.querySelector('.pause-button') as HTMLInputElement).onclick = () => {
         this.pauseAndResumeGame();
       };
       (document.querySelector('#closeGamePausedModal') as HTMLInputElement).onclick = () => {
@@ -93,7 +93,7 @@ export default class TournamentScene extends Scene {
       };
       (document.getElementById('resumeGameButton') as HTMLInputElement).onclick = () => {
         this.pauseAndResumeGame();
-      };
+      }; */
     }
   
   
@@ -233,7 +233,7 @@ export default class TournamentScene extends Scene {
             channel.attach(function (err) {
             if (!err) {
               channel.subscribe(function (message) {
-                displayMessage(message);
+                displayScore(message);
               });
             } else {
               console.error("Error attaching to the channel: " + err.message);

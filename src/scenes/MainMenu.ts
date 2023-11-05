@@ -14,18 +14,18 @@ import {
   import { mainCamera } from "../main";
   import TWEEN, { Tween } from "@tweenjs/tween.js";
   
-  import { mainRoad } from "./utils/mainRoad";
-  import { citySkyBox } from "./utils/skybox";
-  import { loadBlock } from "./utils/buildingBlockLoader";
-  import { loadCar } from "./utils/raceCarLoader";
-  import { loadObstacleOne, loadRoadObstacle } from "./utils/obstaclesLoader";
+  import { mainRoad } from "../utils/mainRoad";
+  import { citySkyBox } from "../utils/skybox";
+  import { loadBlock } from "../utils/buildingBlockLoader";
+  import { loadCar } from "../utils/raceCarLoader";
+  import { loadObstacleOne, loadRoadObstacle } from "../utils/obstaclesLoader";
   
 export default class MainMenuScene extends Scene {
     private mainRoad = new Object3D();
     private mainRoadClone = new Object3D();
     private roadSize = 0;
     private buildingBlocKSize = 0;
-  
+    
     private speed = 1;
     private clock = new Clock();
     private delta = 0;
@@ -44,6 +44,7 @@ export default class MainMenuScene extends Scene {
     private amountToPool = 4;
     private bus = new Object3D();
     private taxi = new Object3D();
+    private limo = new Object3D();
   
     private obstacleOne = new Group();
   
@@ -63,53 +64,36 @@ export default class MainMenuScene extends Scene {
   
         this.taxi = await loadRoadObstacle("Taxi");
         this.taxi.scale.set(0.00017, 0.00017, 0.00017);
+
+     
   
         this.obstacleOne = loadObstacleOne(this.bus, this.taxi);
-    }
+        mainCamera.rotation.set(0,0,0);
   
-    /*  private poolBuildingBlocks() {
-      for (let i = 0; i < this.amountToPool; i++) {
-        const buildingBlockA = this.buildingBlockA.clone();
-        const buildingBlockB = this.buildingBlockB.clone();
-        const buildingBlockC = this.buildingBlockC.clone();
-        const buildingBlockD = this.buildingBlockD.clone();
-  
-        buildingBlockA.scale.set(0.009, 0.009, 0.009);
-        buildingBlockB.scale.set(0.009, 0.009, 0.009);
-        buildingBlockC.scale.set(0.009, 0.009, 0.009);
-        buildingBlockD.scale.set(0.009, 0.009, 0.009);
-  
-        buildingBlockA.position.set(0, -5, 0);
-        buildingBlockB.position.set(0, -5, 0);
-        buildingBlockC.position.set(0, -5, 0);
-        buildingBlockD.position.set(0, -5, 0);
-  
-        buildingBlockA.visible = false;
-        buildingBlockB.visible = false;
-        buildingBlockC.visible = false;
-        buildingBlockD.visible = false;
-  
-        this.pooledBuildingBlocks.push(
-          buildingBlockA,
-          buildingBlockB,
-          buildingBlockC,
-          buildingBlockD
-        );
-        this.add(buildingBlockA);
-        this.add(buildingBlockB);
-        this.add(buildingBlockC);
-        this.add(buildingBlockC);
-      }
-    } */
-  
-    initialize() {
-        const ambient = new AmbientLight("#3F4A59", 6);
-        this.add(ambient);
-  
-        const light = new DirectionalLight(0xffffff, 2);
+        const light = new DirectionalLight(0xffffff, 3);
         light.position.set(0, 2, 1);
         this.add(light);
-  
+        const ambient = new AmbientLight("#3F4A59", 3);
+        this.add(ambient);
+    }
+
+    initialize() {
+        if (!this.visible) {
+            this.visible = true;
+        }
+        const urlParams = new URLSearchParams(window.location.search);
+        const spaceParam = urlParams.get('space');
+        if (spaceParam) {
+            (document.querySelector('#tournamentInvitationModal') as HTMLInputElement).style.display = 'flex';
+         }
+        (document.querySelector('.menu-buttons-container') as HTMLInputElement).style.display = 'flex';
+        (document.querySelector('.info-section') as HTMLInputElement).style.display = 'block';
+
+
+        (document.querySelector('.high-score') as HTMLInputElement).innerHTML = JSON.parse(localStorage.getItem('high-score')!);
+        (document.querySelector('.total-coins') as HTMLInputElement).innerHTML = JSON.parse(localStorage.getItem('total-coins')!);
+
+        
         this.buildingBlockA.position.set(-0.45, -0.088, -1.6);
         this.buildingBlockA.scale.set(0.02, 0.009, 0.015);
         this.add(this.buildingBlockA);
@@ -155,9 +139,9 @@ export default class MainMenuScene extends Scene {
         this.playerBox.position.set(-0.015, -0.047, -0.18);
         //  this.add(this.playerBox);
   
-        this.ferrari.scale.set(0.0075, 0.0075, 0.0075);
-        this.ferrari.rotation.y = 180 * (Math.PI / 180);
-        this.ferrari.position.set(-0.04, -0.065, -0.48);
+        this.ferrari.scale.set(0.012, 0.012, 0.012);
+        //this.ferrari.rotation.y = 180 * (Math.PI / 180);
+        this.ferrari.position.set(0, -0.065, -0.8);
   
         this.add(this.ferrari);
         /*     this.bus.rotation.y = 180 * (Math.PI / 180);
@@ -168,60 +152,14 @@ export default class MainMenuScene extends Scene {
             if (e.key === "ArrowLeft") {
                 this.moveLeft();
             }
-            if (e.key === " ") {
-                console.log(this.playerBox.position);
-            }
+           
             if (e.key === "ArrowRight") {
                 this.moveRight();
             }
-            if (e.key === "a") {
-                this.moveCameraLeft();
-            }
-            if (e.key === "d") {
-                this.moveCameraRight();
-            }
-            if (e.key === "e") {
-                this.moveCameraUp();
-                //this.playerBox.position.y += 0.008;
-            }
-            if (e.key === "x") {
-                this.moveCameraDown();
-                // this.playerBox.position.y -= 0.008;
-            }
-            if (e.key === "ArrowUp") {
-                this.moveCameraForward();
-                // this.playerBox.position.z -= 0.008;
-            }
-            if (e.key === "ArrowDown") {
-                this.moveCameraBackward();
-                // this.playerBox.position.z += 0.008;
-            }
+            
         };
     }
-    private moveCameraLeft = () => {
-        mainCamera.position.x -= 0.08;
-    };
-    private moveCameraRight = () => {
-        mainCamera.position.x += 0.08;
-    };
-    private moveCameraUp = () => {
-        mainCamera.position.y += 0.08;
-        //this.playerBox.position.y += 0.008;
-    };
-    private moveCameraDown = () => {
-        mainCamera.position.y -= 0.08;
-    };
-    private moveCameraForward = () => {
-        mainCamera.position.z -= 0.08;
-        // this.mainRoad.position.z += 1;
-        //console.log(this.mainRoad.position.z);
-        // this.playerBox.position.z += 0.008;
-    };
-    private moveCameraBackward = () => {
-        mainCamera.position.z += 0.08;
-        //this.playerBox.position.z -= 0.008;
-    };
-  
+   
     private moveLeft() {
         //    if (this.ferrari.position.x !== -0.051) {
         console.log(this.ferrari.position.x);
@@ -279,6 +217,14 @@ export default class MainMenuScene extends Scene {
     }
     update() {
       
+    }
+
+    hide() {
+        this.visible = false;
+        (document.querySelector('.menu-buttons-container') as HTMLInputElement).style.display = 'none';
+        (document.querySelector('.info-section') as HTMLInputElement).style.display = 'none';
+
+        
     }
 }
   

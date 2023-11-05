@@ -4,29 +4,114 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="./src/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Just Drive</title>
   </head>
   <body>
     <section class="main-container">
-       <section class="loader-container">
-      <img src="./public/assets/Infinity-1s-200px.gif" />
-      <h3>Loading...</h3>
-    </section>
-      
-     <section>
-      <h1>HighScores:20000</h1>
-      <h1>Coins:20000</h1>
-     </section>
+      <section class="loader-container">
+        <img src="./public/assets/Infinity-1s-200px.gif" />
+        <h3>Loading...</h3>
+      </section>
 
-     <section class="menu-buttons-container">
-      <button>Play</button>
-      <button>Market</button>
-      <button>About</button>
-      <button>Competition</button>
-     </section>
+      <section class="info-section">
+        <h1> HighScores: <span class="high-score"></span></h1>
+        <h1> Coins: <span class="total-coins"></span></h1>
+      </section>
+
+      <section class="modal" id="competitionModal">
+        <div class="modal-header">
+          <h2 class="empty-space">.</h2>
+          <h4>New Competition</h4>
+          <h2 id="closeCompetitionModal">X</h2>
+        </div>
+        <div class="modal-body" id="competitionModalBody">
+          <div id="usernameSection">
+            <h3>Enter your username</h3>
+            <input type="text" id="hostUsername" />
+          </div>
+
+          <button id="createCompetitionButton">Create</button>
+          <div id="newCompetitionSpinner" class="spinner"></div>
+          <button id="copyLinkButton">Copy Link</button>
+          <button id="startTournamentButton">Start</button>
+        </div>
+        <div class="modal-bottom"></div>
+      </section>
+
+      <section class="menu-buttons-container">
+        <button id="playGameButton">Play</button>
+        <button>Market</button>
+        <button>About</button>
+        <button id="competitionButton">Competition</button>
+      </section>
+
+      <button class="pause-button"><i class="fa-solid fa-pause"></i></button>
+
+      <section class="modal" id="gamePausedModal">
+        <div class="modal-header">
+          <h2 class="empty-space">.</h2>
+          <h4>Game Paused!</h4>
+          <h2 id="closeGamePausedModal">X</h2>
+        </div>
+        <div class="modal-body" id="competitionModalBody">
+          <button id="resumeGameButton">Resume</button>
+          <button id="quitGameButton">Quit</button>
+        </div>
+        <div class="modal-bottom"></div>
+      </section>
+      <section class="race-info-section">
+        <h1>Scores:<span class="scores-count">0</span></h1>
+        <h1>Coins:<span class="coins-count">0</span></h1>
+      </section>
+
+      <section class="modal" id="gameOverModal">
+        <div class="modal-header">
+           <h2 class="empty-space">.</h2>
+          <h4>Game Over!</h4>
+          <h2 class="empty-space">.</h2>
+        </div>
+        <div class="modal-body" id="competitionModalBody">
+          <button id="restartGameButton">Restart</button>
+          <button id="exitGameButton">Quit Game</button>
+        </div>
+        <div class="modal-bottom"></div>
+      </section>
+
+      <div id="liveScoreBoard">
+       <div id="scoreList"></div>
+      
+   
+    </div>
+
+
+    <section class="modal" id="tournamentInvitationModal">
+      <div class="modal-header">
+        <h2 class="empty-space">.</h2>
+        <h4>Tournament invitation!</h4>
+        <h2 id="closeGamePausedModal">X</h2>
+      </div>
+      <div class="modal-body" id="competitionModalBody">
+
+        <h4>You have been invited to a Tournament</h4><br>
+        <div id="usernameSection">
+          <h3>Username</h3>
+          <input type="text" id="visitorUsername" />
+        </div>
+        <button id="joinTournamentButton">Join</button>
+       <!--  <button id="declineTournamentButton">Decline</button> -->
+      </div>
+      <div class="modal-bottom"></div>
     </section>
+    </section>
+
+    
     <canvas id="app"> </canvas>
     <script type="module" src="/src/main.ts"></script>
+    <!-- <script type="module" src="src/utils/competition.ts"></script> -->
   </body>
 </html>

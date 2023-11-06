@@ -19,7 +19,7 @@ body {
 }
 
 .info-section{
-  position: absolute;
+  position: absolute;margin: 10px;
 }
 
 .loader-container {
@@ -51,13 +51,41 @@ body {
 
 .menu-buttons-container {
   bottom: 6px;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   width: 100%;
-  position: absolute;
   flex-wrap: wrap;
+  position: absolute;
 }
+
+.car-selection-buttons {
+  display: flex;
+  
+  bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+
+}
+.car-selection-buttons h2{
+  color:#fff;
+  margin: 0 20px;
+  display: block;
+  padding:10px 20px;
+  background-color: #0079d00e;
+}
+.car-selection-container{
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  bottom: 0;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+}
+
 input[type=text] {
   width: 100%;
   padding: 12px 20px;
@@ -297,4 +325,22 @@ flex-direction: column;
 
 #tournamentInvitationModal{
   display: none;
+}
+
+#selectCharacterBtn{
+  display: none;
+}
+#character-price-button {
+  display: block;
+}
+
+.home-menu{
+  right:0;
+  position: absolute;
+  margin: 20px 10px;
+  display: none;
+}
+
+.car-selection-container{
+
 }

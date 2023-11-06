@@ -19,8 +19,8 @@
       </section>
 
       <section class="info-section">
-        <h1> HighScores: <span class="high-score"></span></h1>
-        <h1> Coins: <span class="total-coins"></span></h1>
+        <h1>HighScores: <span class="high-score"></span></h1>
+        <h1>Coins: <span class="total-coins"></span></h1>
       </section>
 
       <section class="modal" id="competitionModal">
@@ -45,7 +45,7 @@
 
       <section class="menu-buttons-container">
         <button id="playGameButton">Play</button>
-        <button>Market</button>
+        <button id="marketButton">Market</button>
         <button>About</button>
         <button id="competitionButton">Competition</button>
       </section>
@@ -71,7 +71,7 @@
 
       <section class="modal" id="gameOverModal">
         <div class="modal-header">
-           <h2 class="empty-space">.</h2>
+          <h2 class="empty-space">.</h2>
           <h4>Game Over!</h4>
           <h2 class="empty-space">.</h2>
         </div>
@@ -83,33 +83,50 @@
       </section>
 
       <div id="liveScoreBoard">
-       <div id="scoreList"></div>
-      
-   
-    </div>
-
-
-    <section class="modal" id="tournamentInvitationModal">
-      <div class="modal-header">
-        <h2 class="empty-space">.</h2>
-        <h4>Tournament invitation!</h4>
-        <h2 id="closeGamePausedModal">X</h2>
+        <div id="scoreList"></div>
       </div>
-      <div class="modal-body" id="competitionModalBody">
-
-        <h4>You have been invited to a Tournament</h4><br>
-        <div id="usernameSection">
-          <h3>Username</h3>
-          <input type="text" id="visitorUsername" />
+      <section class="modal" id="tournamentInvitationModal">
+        <div class="modal-header">
+          <h2 class="empty-space">.</h2>
+          <h4>Tournament invitation!</h4>
+          <h2 id="closeGamePausedModal">X</h2>
         </div>
-        <button id="joinTournamentButton">Join</button>
-       <!--  <button id="declineTournamentButton">Decline</button> -->
+        <div class="modal-body" id="competitionModalBody">
+          <h4>You have been invited to a Tournament</h4>
+          <br />
+          <div id="usernameSection">
+            <h3>Username</h3>
+            <input type="text" id="visitorUsername" />
+          </div>
+          <button id="joinTournamentButton">Join</button>
+          <!--  <button id="declineTournamentButton">Decline</button> -->
+        </div>
+        <div class="modal-bottom"></div>
+      </section>
+
+      <section class="car-selection-container">
+        <section class="car-selection-buttons">
+          <button id="prevBtn">Prev</button>
+          <h2 class="car-name"></h2>
+
+          <button id="nextBtn">Next</button>
+        </section>
+        <button id="car-price-button">
+          <span class="btn-icon"> <i class="fa-solid fa-coins"></i> </span>
+          <span id="character-price-text"> 0</span>
+        </button>
+        <button id="selectCharacterBtn">
+          <span><i class="fa-solid fa-check"></i> </span>
+          <span id="select-button-text"> Select </span>
+        </button>
+      </section>
+      <div class="home-menu">
+        <button>
+          <span><i class="fa-solid fa-home"></i></span>
+        </button>
       </div>
-      <div class="modal-bottom"></div>
-    </section>
     </section>
 
-    
     <canvas id="app"> </canvas>
     <script type="module" src="/src/main.ts"></script>
     <!-- <script type="module" src="src/utils/competition.ts"></script> -->

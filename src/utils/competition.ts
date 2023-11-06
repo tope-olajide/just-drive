@@ -14,7 +14,7 @@ const customConfig: Config = {
   length: 3,
 };
 
-let apiKey = "xxxxxxxxXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxXXXXXXXXXxxxxxxx";
+let apiKey = "xxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxx";
 let username: string = "";
 
 let channelName: string = uniqueNamesGenerator(customConfig);

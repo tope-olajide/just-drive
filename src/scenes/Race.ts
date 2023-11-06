@@ -13,6 +13,8 @@ import {
 } from "three";
 
 import { mainCamera } from "../main";
+
+// @ts-ignore
 import TWEEN, { Tween } from "@tweenjs/tween.js";
 
 import { mainRoad } from "../utils/mainRoad";
@@ -35,6 +37,8 @@ import {
   loadGroupECoins,
   loadGroupFCoins,
 } from "../utils/coinsLoader";
+import { IallGameCars } from "./CarSelectionScene";
+import cars from "../utils/cars";
 
 export default class RaceScene extends Scene {
   private mainRoad = new Object3D();
@@ -58,12 +62,11 @@ export default class RaceScene extends Scene {
 
   private pooledObstacles = <Array<Object3D>>[];
   private pooledCoins = <Array<Object3D>>[];
-  private amountToPool = 4;
   private bus = new Object3D();
   private taxi = new Object3D();
   private coin = new Object3D();
   private obstacleOne = new Group();
-  private obstacleTwo = new Group();
+ // private obstacleTwo = new Group();
   private obstacleThree = new Group();
   private obstacleFour = new Group();
   private obstacleFive = new Group();
@@ -93,6 +96,20 @@ export default class RaceScene extends Scene {
   private activeObstacleTwo = new Object3D();
 
   private activeCoinsGroup = new Object3D();
+  private allGameCars: IallGameCars[] = [];
+
+  private activeCarIndex = 0;
+
+  
+
+  private sporty = new Object3D();
+  private pickup = new Object3D();
+  private offroad = new Object3D();
+  private suv = new Object3D();
+  private carsContainer: Object3D[] = [];
+
+  private playerCar!: Object3D;
+  
 
   async load() {
     this.mainRoad = await mainRoad();
@@ -104,9 +121,24 @@ export default class RaceScene extends Scene {
     this.buildingBlockB = await loadBlock("BuildingBlockB");
     this.buildingBlockC = await loadBlock("BuildingBlockC");
     this.buildingBlockD = await loadBlock("BuildingBlockD");
-    this.ferrari = await loadCar("Ferrari");
+
+    this.pickup = await loadCar(cars[0].model);
+    this.offroad = await loadCar(cars[1].model);
+    this.suv = await loadCar(cars[2].model);
+    this.sporty = await loadCar(cars[3].model);
+
+    this.pickup.visible = false;
+    this.offroad.visible = false;
+    this.suv.visible = false;
+    this.sporty.visible = false;
+
+    this.add(this.pickup, this.offroad, this.suv, this.sporty);
+
+    this.carsContainer.push(this.pickup, this.offroad, this.suv, this.sporty);
+    
+    this.ferrari = await loadCar("Offroad");
     this.bus = await loadRoadObstacle("Bus");
-    this.bus.scale.set(0.00015, 0.00015, 0.00015);
+    this.bus.scale.set(0.0002, 0.0002, 0.0002);
 
     this.taxi = await loadRoadObstacle("Taxi");
     this.taxi.scale.set(0.00017, 0.00017, 0.00017);
@@ -263,11 +295,11 @@ export default class RaceScene extends Scene {
       this.groupFCoins
     );
     this.pooledCoins.push(
-      /*  this.groupACoins,
+       this.groupACoins,
       this.groupBCoins,
       this.groupCCoins,
       this.groupDCoins,
-      this.groupECoins, */
+      this.groupECoins, 
       this.groupFCoins
     );
   }
@@ -418,7 +450,7 @@ export default class RaceScene extends Scene {
     }
   } */
 
-  private moveObstacle() {
+/*   private moveObstacle() {
     for (let i = 0; i < this.pooledObstacles.length; i++) {
       if (this.pooledObstacles[i].visible) {
         this.pooledObstacles[i].position.z += this.speed * this.delta;
@@ -435,7 +467,7 @@ export default class RaceScene extends Scene {
         }
       }
     }
-  }
+  } */
 
   /*   private detectCollisionWithObstacles(activeObstacle: Object3D) {
     for (let i = 0; i < activeObstacle.children.length; i += 1) {
@@ -459,7 +491,7 @@ export default class RaceScene extends Scene {
         this.gameOver();
       }
     }
-  }
+  } 
 
   private displayCoinsChildren(parent: Object3D) {
     for (let i = 0; i < parent.children.length; i += 1) {
@@ -469,7 +501,7 @@ export default class RaceScene extends Scene {
     }
   }
 
-  private resetCoins() {
+/*   private resetCoins() {
     for (let i = 0; i < this.pooledCoins.length; i++) {
       if (this.pooledCoins[i].visible) {
         this.pooledCoins[i].visible = false;
@@ -477,7 +509,7 @@ export default class RaceScene extends Scene {
         this.pooledCoins[i].position.set(0, 0, 0);
       }
     }
-  }
+  } */
 
   private gameOver() {
     console.log("game over");
@@ -536,14 +568,15 @@ export default class RaceScene extends Scene {
   }
 
   initialize() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const spaceParam = urlParams.get("space");
-    if (spaceParam) {
-    }
+ 
+    
+      mainCamera.rotation.x = -25 * (Math.PI / 180);
+    mainCamera.position.set(0, 0.17, -0.45);
+    
     setTimeout(() => {
-      this.spawnObstacleOne();
-      this.spawnObstacleTwo();
-      this.spawnCoins();
+ /*      this.spawnObstacleOne();
+      this.spawnObstacleTwo(); */
+      //this.spawnCoins();
       this.isPlayerHeadStart = true;
     }, 4000);
 
@@ -560,19 +593,19 @@ export default class RaceScene extends Scene {
       document.querySelector(".pause-button") as HTMLInputElement
     ).style.display = "block";
 
-    this.playerBox.scale.set(0.01, 0.01, 0.02);
-    this.playerBox.position.set(-0.015, -0.047, -0.18);
-    //  this.add(this.playerBox);
+  
+    this.allGameCars = (JSON.parse(localStorage.getItem('allGameCars')!));
+    this.activeCarIndex = this.allGameCars
+      .findIndex((car) => car.isActive === true);
+    this.playerCar = this.carsContainer[this.activeCarIndex];
 
-    this.ferrari.scale.set(0.009, 0.009, 0.009);
-    this.ferrari.rotation.y = 180 * (Math.PI / 180);
-    this.ferrari.position.set(-0.04, -0.065, -0.7);
+    this.playerCar.scale.set(0.025, 0.025, 0.025);
+    this.playerCar.rotation.y = 180 * (Math.PI / 180);
+    this.playerCar.position.set(-0.04, -0.065, -0.7);
 
-    this.add(this.ferrari);
-    /*     this.bus.rotation.y = 180 * (Math.PI / 180);
-    this.bus.position.set(-0.04, -0.065, -2.58);
-    this.add(this.bus); */
-    // this.add(this.obstacleOne);
+    this.playerCar.visible = true
+
+
     document.onkeydown = (e) => {
       if (e.key === "ArrowLeft") {
         this.moveLeft();
@@ -615,19 +648,22 @@ export default class RaceScene extends Scene {
   };
   private moveCameraUp = () => {
     mainCamera.position.y += 0.08;
+    console.log( mainCamera.position.y)
     //this.playerBox.position.y += 0.008;
   };
   private moveCameraDown = () => {
     mainCamera.position.y -= 0.08;
+    console.log( mainCamera.position.y)
   };
   private moveCameraForward = () => {
     mainCamera.position.z -= 0.08;
     // this.mainRoad.position.z += 1;
-    //console.log(this.mainRoad.position.z);
+    console.log(mainCamera.position.z);
     // this.playerBox.position.z += 0.008;
   };
   private moveCameraBackward = () => {
     mainCamera.position.z += 0.08;
+    console.log(mainCamera.position.z);
     //this.playerBox.position.z -= 0.008;
   };
   private pauseAndResumeGame() {
@@ -644,17 +680,20 @@ export default class RaceScene extends Scene {
       ).style.display = "none";
       this.isGamePaused = false;
     }
+
+    this.saveCoins();
+    this.saveHighScore();
   }
   private moveLeft() {
     //    if (this.ferrari.position.x !== -0.051) {
-    console.log(this.ferrari.position.x);
-    this.ferrari.rotation.y = -170 * (Math.PI / 180);
+    console.log(this.playerCar.position.x);
+    this.playerCar.rotation.y = -170 * (Math.PI / 180);
 
-    const resetRotation = new TWEEN.Tween(this.ferrari.rotation)
-      .to({ y: this.ferrari.rotation.y - 10 * (Math.PI / 180) }, 100)
+    const resetRotation = new TWEEN.Tween(this.playerCar.rotation)
+      .to({ y: this.playerCar.rotation.y - 10 * (Math.PI / 180) }, 100)
       .easing(TWEEN.Easing.Quadratic.Out);
-    const tweenLeft = new TWEEN.Tween(this.ferrari.position)
-      .to({ x: this.ferrari.position.x - 0.1 }, 200)
+    const tweenLeft = new TWEEN.Tween(this.playerCar.position)
+      .to({ x: this.playerCar.position.x - 0.1 }, 200)
       .easing(TWEEN.Easing.Quadratic.Out)
       .onUpdate(() => {
         // this.ferrari.rotation.y = -160 * (Math.PI / 180);
@@ -676,12 +715,12 @@ export default class RaceScene extends Scene {
 
   private moveRight() {
     //    if (this.ferrari.position.x !== 0.056999999999999995) {
-    this.ferrari.rotation.y = 170 * (Math.PI / 180);
-    const resetRotation = new TWEEN.Tween(this.ferrari.rotation)
-      .to({ y: this.ferrari.rotation.y + 10 * (Math.PI / 180) }, 100)
+    this.playerCar.rotation.y = 170 * (Math.PI / 180);
+    const resetRotation = new TWEEN.Tween(this.playerCar.rotation)
+      .to({ y: this.playerCar.rotation.y + 10 * (Math.PI / 180) }, 100)
       .easing(TWEEN.Easing.Quadratic.Out);
-    const tweenRight = new Tween(this.ferrari.position)
-      .to({ x: this.ferrari.position.x + 0.1 }, 200)
+    const tweenRight = new Tween(this.playerCar.position)
+      .to({ x: this.playerCar.position.x + 0.1 }, 200)
       .easing(TWEEN.Easing.Quadratic.Out)
       /* .onUpdate(() => {
           if (this.ferrari.position.x >= 0.056999999999999995) {
@@ -697,7 +736,7 @@ export default class RaceScene extends Scene {
       .to({ x: mainCamera.position.x + 0.04 }, 200)
       .easing(TWEEN.Easing.Quadratic.Out);
     tweenCameraRight.start();
-    console.log(this.ferrari.position.x);
+    console.log(this.playerCar.position.x);
     //   }
   }
 
@@ -710,7 +749,7 @@ export default class RaceScene extends Scene {
         this.scores.toString();
     }
 
-    this.playerBoxCollider.setFromObject(this.ferrari);
+    this.playerBoxCollider.setFromObject(this.playerCar);
     this.mainRoad.position.z += this.speed * this.delta;
     this.mainRoadClone.position.z += this.speed * this.delta;
     this.skyBox.rotation.y += 0.006 * this.delta;
@@ -771,6 +810,7 @@ export default class RaceScene extends Scene {
     this.clock.stop();
 
     // this.resetCoins();
+
     this.scores = 0;
     (document.querySelector(".scores-count") as HTMLInputElement).innerHTML =
       this.scores.toString();
@@ -778,9 +818,11 @@ export default class RaceScene extends Scene {
     this.coins = 0;
     (document.querySelector(".coins-count") as HTMLInputElement).innerHTML =
       this.coins.toString();
-   // this.isGameOver = false;
+    
+    // this.isGameOver = false;
+    
 
-     for (let i = 0; i < this.pooledObstacles.length; i++) {
+/*      for (let i = 0; i < this.pooledObstacles.length; i++) {
       // if (this.pooledObstacles[i].visible) {
       this.pooledObstacles[i].visible = false;
       this.pooledObstacles[i].position.set(0, 0, -5);
@@ -791,19 +833,28 @@ export default class RaceScene extends Scene {
       this.pooledCoins[i].visible = false;
       this.pooledCoins[i].position.set(0, 0, -5);
       //  }
-    } 
+    }  */
+
     this.saveCoins();
     this.saveHighScore();
+
     /* if (this.activeObstacleOne.visible || this.activeObstacleTwo.visible) {
       this.activeObstacleOne.position.z = -10;
       this.activeObstacleOne.visible = false;
       this.activeObstacleTwo.position.z = -15;
       this.activeObstacleTwo.visible = false;
       this.activeCoinsGroup.position.z = -10;
-     
-      
     }*/
-   this.isGameOver = true;
+
+
+    this.isGameOver = false;
+    this.activeObstacleOne.position.z = -10;
+    this.activeObstacleOne.visible = false;
+    this.activeObstacleTwo.position.z = -15;
+    this.activeObstacleTwo.visible = false;
+    this.activeCoinsGroup.position.z = -10;
+    this.isGamePaused = false;
     this.isPlayerHeadStart = false;
+    
   }
 }

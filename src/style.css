@@ -115,6 +115,7 @@ button{
   touch-action: manipulation;
   overflow: hidden;
   margin: 5px;
+  z-index: 99999999;
 }
 
 button:before {
@@ -155,7 +156,7 @@ button {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.2);
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -179,6 +180,7 @@ button {
   border-top-right-radius:10px ;
   padding: 10px 10px;
   box-sizing: border-box;
+  z-index: 100000;
 }
 .modal-header:before {
   background-color: initial;
@@ -214,6 +216,7 @@ button {
   box-sizing: border-box;
   text-align: center;
   overflow-y: auto;
+  z-index: 100000;
 }
 #spectatorModeModalBody{
   align-items: center;
@@ -348,12 +351,12 @@ flex-direction: column;
   display: none;
 }
 
-#closeTournamentGameOverModal, #closeSpectatorModeModal{
+#closeTournamentGameOverModal, #closeSpectatorModeModal, #closeAboutModal{
   cursor: pointer;
   z-index: 1;
 }
 
-#tournamentGameOverModal{
+#tournamentGameOverModal, #aboutModal{
   display: none;
 }
 #tournamentGameOverModal h2{
@@ -512,7 +515,8 @@ width: 95%;
 
 .confetti-container {
   user-select: none;
-  z-index: 999;
+  z-index: 1;
+  
   
 }
 .confetti {
@@ -520,7 +524,6 @@ width: 95%;
   left: 0;
   right: 0;
   display: none;
-  z-index: 999;
   /* z-index: 500; */
   width: 100vw;
    height: 100vh; 

@@ -16,7 +16,7 @@ const renderer = new WebGLRenderer({
 });
 
 renderer.setSize(width, height);
-export const mainCamera = new PerspectiveCamera(75, width / height, 0.1, 800);
+export const mainCamera = new PerspectiveCamera(70, width / height, 0.1, 800);
 mainCamera.rotation.x = -25 * (Math.PI / 180);
 mainCamera.position.set(0, 0.17, -0.45);
 
@@ -113,7 +113,20 @@ main();
 
   (document.querySelector(".home-menu") as HTMLElement).onclick = () => {
     switchToMainMenuScene();
-  };
+};
+  
+
+(document.querySelector("#aboutButton") as HTMLElement).onclick = () => {
+  (
+    document.getElementById("aboutModal") as HTMLElement
+  ).style.display = "flex";
+};
+
+(document.querySelector("#closeAboutModal") as HTMLElement).onclick = () => {
+  (
+    document.getElementById("aboutModal") as HTMLElement
+  ).style.display = "none";
+};
 
 
 (document.querySelector("#closeSpectatorModeModal") as HTMLElement).onclick =

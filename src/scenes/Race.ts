@@ -536,8 +536,8 @@ export default class RaceScene extends Scene {
       }, false);
     }
 
-    mainCamera.rotation.x = -25 * (Math.PI / 180);
-    mainCamera.position.set(0, 0.16, -0.4);
+    mainCamera.rotation.x = 5 * (Math.PI / 180);
+    mainCamera.position.set(0, 0.10, -0.4);
 
     setTimeout(() => {
       this.isPlayerHeadStart = true;
@@ -562,9 +562,9 @@ export default class RaceScene extends Scene {
     );
     this.playerCar = this.carsContainer[this.activeCarIndex];
 
-    this.playerCar.scale.set(0.023, 0.023, 0.023);
+    this.playerCar.scale.set(0.026, 0.026, 0.026);
     this.playerCar.rotation.y = 180 * (Math.PI / 180);
-    this.playerCar.position.set(-0.04, -0.065, -0.7);
+    this.playerCar.position.set(-0.04, -0.065, -0.9);
 
     this.playerCar.visible = true;
 
@@ -741,7 +741,7 @@ export default class RaceScene extends Scene {
       this.moveCoins();
       this.moveObstacleOne();
       this.moveObstacleTwo();
-      this.detectCollisionWithObstacles();
+     this.detectCollisionWithObstacles();
       this.detectCollisionWithCoins();
     }
     if (!this.isGameOver && this.speed < 2.2 && !this.isGamePaused) {

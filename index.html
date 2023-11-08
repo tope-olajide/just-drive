@@ -46,7 +46,7 @@
       <section class="menu-buttons-container">
         <button id="playGameButton">Play</button>
         <button id="marketButton">Market</button>
-        <button>About</button>
+        <button id="aboutButton">About</button>
         <button id="competitionButton">Tournament</button>
       </section>
 
@@ -135,11 +135,11 @@
         <div class="modal-body" id="competitionModalBody">
           <h2>You have been eliminated from the tournament!</h2>
           <p>
-            You can still watch the remaining players in real time and see your final rank by clicking on the "Spectator Mode" button.
+            You can still watch the remaining players in real time and see your
+            final rank by clicking on the "Spectator Mode" button.
           </p>
-          
+
           <button id="spectatorModeButton">Spectator Mode</button>
-          
         </div>
         <div class="modal-bottom"></div>
       </section>
@@ -152,12 +152,11 @@
         </div>
         <div class="modal-body" id="spectatorModeModalBody">
           <h4>Status: <span id="competitionStatus"></span></h4>
-          <div id="spectatorModeLiveScores">
-            
-          </div>
-          <h5>Your position is <span id="playerPosition"><i>wait for it...</i></span></h5>
-          
-         
+          <div id="spectatorModeLiveScores"></div>
+          <h5>
+            Your position is
+            <span id="playerPosition"><i>wait for it...</i></span>
+          </h5>
         </div>
         <div class="modal-bottom"></div>
       </section>
@@ -171,132 +170,144 @@
         <div class="modal-body" id="spectatorModeModalBody">
           <h4 class="trophy-icon"><i class="fa-solid fa-trophy"></i></h4>
           <p>Congratulations! You are the champion of the tournament.</p>
-          
+
           <button id="closeCongratulatonsModeModal">Close</button>
         </div>
         <div class="modal-bottom"></div>
       </section>
-      
 
+      <section class="modal" id="aboutModal">
+        <div class="modal-header">
+          <h2 class="empty-space">.</h2>
+          <h4>About Just Drive</h4>
+          <h2 class="" id="closeAboutModal">x</h2>
+        </div>
+        <div class="modal-body" id="spectatorModeModalBody">
+          <p>
+            Just Drive is a thrilling and addictive endless car racing game that
+            lets you race against other players in real-time. The game is built
+            with TypeScript, Threejs, and Ably.js.
+          </p>
+          <p>The game features a dynamic Tournament Mode, where you can create your own tournaments and invite players from all over the world to join. You can also join existing tournaments and compete for the top spot on the leaderboard. The more you race, the more coins you earn, which you can use to unlock new cars.
+          </p>
+        </div>
+        <div class="modal-bottom"></div>
+      </section>
 
-
-
-
-
-<canvas id="app"> </canvas>
-<div class="confetti-container">
-      <div class="confetti">
-        <i style="--speed: 10; --bg: yellow" class="square"></i>
-        <i style="--speed: 18; --bg: white" class="pentagram"></i>
-        <i style="--speed: 29; --bg: green" class="rectangle"></i>
-        <i style="--speed: 17; --bg: blue" class="hexagram"></i>
-        <i style="--speed: 33; --bg: red" class="pentagram"></i>
-        <i style="--speed: 26; --bg: yellow" class="dodecagram"></i>
-        <i style="--speed: 24; --bg: pink" class="wavy-line"> </i>
-        <i style="--speed: 5; --bg: blue" class="wavy-line"></i>
-        <i style="--speed: 40; --bg: white" class="square"></i>
-        <i style="--speed: 17; --bg: green" class="rectangle"></i>
-        <i style="--speed: 25; --bg: white" class="square"></i>
-        <i style="--speed: 18; --bg: green" class="rectangle"></i>
-        <i style="--speed: 15; --bg: yellow" class="wavy-line"> </i>
-        <i style="--speed: 32; --bg: yellow" class="pentagram"></i>
-        <i style="--speed: 25; --bg: white" class="square"></i>
-        <i style="--speed: 18; --bg: green" class="rectangle"></i>
-        <i style="--speed: 37; --bg: yellow" class="dodecagram"></i>
-        <i style="--speed: 23; --bg: pink" class="wavy-line"></i>
-        <i style="--speed: 37; --bg: red" class="dodecagram"></i>
-        <i style="--speed: 37; --bg: pink" class="wavy-line"></i>
-        <i style="--speed: 36; --bg: white" class="hexagram"></i>
-        <i style="--speed: 32; --bg: green" class="wavy-line"></i>
-        <i style="--speed: 32; --bg: yellow" class="pentagram"></i>
-        <i style="--speed: 29; --bg: white" class="square"></i>
-        <i style="--speed: 18; --bg: green" class="rectangle"></i>
-        <i style="--speed: 37; --bg: red" class="dodecagram"></i>
-        <i style="--speed: 23; --bg: pink" class="wavy-line"> </i>
-        <i style="--speed: 30; --bg: pink" class="rectangle"></i>
-        <i style="--speed: 30; --bg: red" class="square"></i>
-        <i style="--speed: 18; --bg: red" class="pentagram"></i>
-        <i style="--speed: 19; --bg: green" class="rectangle"></i>
-        <i style="--speed: 16; --bg: blue" class="hexagram"></i>
-        <i style="--speed: 23; --bg: red" class="pentagram"></i>
-        <i style="--speed: 34; --bg: yellow" class="dodecagram"></i>
-        <i style="--speed: 39; --bg: pink" class="wavy-line"></i>
-        <i style="--speed: 40; --bg: purple" class="square"></i>
-        <i style="--speed: 21; --bg: green" class="rectangle"></i>
-        <i style="--speed: 14; --bg: white" class="square"></i>
-        <i style="--speed: 38; --bg: green" class="rectangle"></i>
-        <i style="--speed: 19; --bg: red" class="dodecagram"></i>
-        <i style="--speed: 29; --bg: pink" class="wavy-line"> </i>
-        <i style="--speed: 21; --bg: white" class="hexagram"></i>
-        <i style="--speed: 17; --bg: purple" class="wavy-line"></i>
-        <i style="--speed: 32; --bg: yellow" class="pentagram"></i>
-        <i style="--speed: 23; --bg: white" class="square"></i>
-        <i style="--speed: 18; --bg: green" class="rectangle"></i>
-        <i style="--speed: 37; --bg: red" class="dodecagram"></i>
-        <i style="--speed: 48; --bg: pink" class="wavy-line"> </i>
-        <i style="--speed: 38; --bg: pink" class="rectangle"></i>
-        <i style="--speed: 13; --bg: red" class="pentagram"></i>
-        <i style="--speed: 49; --bg: yellow" class="dodecagram"></i>
-        <i style="--speed: 19; --bg: cyan" class="wavy-line"></i>
-        <i style="--speed: 15; --bg: steelblue" class="square"></i>
-        <i style="--speed: 10; --bg: yellow" class="square"></i>
-        <i style="--speed: 18; --bg: white" class="pentagram"></i>
-        <i style="--speed: 29; --bg: green" class="rectangle"></i>
-        <i style="--speed: 17; --bg: blue" class="hexagram"></i>
-        <i style="--speed: 33; --bg: red" class="pentagram"></i>
-        <i style="--speed: 26; --bg: yellow" class="dodecagram"></i>
-        <i style="--speed: 24; --bg: pink" class="wavy-line"> </i>
-        <i style="--speed: 5; --bg: white" class="wavy-line"></i>
-        <i style="--speed: 40; --bg: purple" class="square"></i>
-        <i style="--speed: 17; --bg: green" class="rectangle"></i>
-        <i style="--speed: 25; --bg: white" class="square"></i>
-        <i style="--speed: 18; --bg: green" class="rectangle"></i>
-        <i style="--speed: 15; --bg: cyan" class="wavy-line"> </i>
-        <i style="--speed: 32; --bg: yellow" class="pentagram"></i>
-        <i style="--speed: 45; --bg: white" class="square"></i>
-        <i style="--speed: 18; --bg: green" class="rectangle"></i>
-        <i style="--speed: 37; --bg: red" class="dodecagram"></i>
-        <i style="--speed: 23; --bg: pink" class="wavy-line"> </i>
-        <i style="--speed: 37; --bg: red" class="dodecagram"></i>
-        <i style="--speed: 37; --bg: pink" class="wavy-line"> </i>
-        <i style="--speed: 26; --bg: white" class="hexagram"></i>
-        <i style="--speed: 32; --bg: cyan" class="wavy-line"></i>
-        <i style="--speed: 32; --bg: yellow" class="pentagram"></i>
-        <i style="--speed: 45; --bg: white" class="square"></i>
-        <i style="--speed: 18; --bg: green" class="rectangle"></i>
-        <i style="--speed: 37; --bg: red" class="dodecagram"></i>
-        <i style="--speed: 23; --bg: pink" class="wavy-line"> </i>
-        <i style="--speed: 50; --bg: pink" class="rectangle"></i>
-        <i style="--speed: 30; --bg: red" class="square"></i>
-        <i style="--speed: 18; --bg: red" class="pentagram"></i>
-        <i style="--speed: 19; --bg: green" class="rectangle"></i>
-        <i style="--speed: 16; --bg: blue" class="hexagram"></i>
-        <i style="--speed: 23; --bg: red" class="pentagram"></i>
-        <i style="--speed: 33; --bg: yellow" class="dodecagram"></i>
-        <i style="--speed: 39; --bg: white" class="wavy-line"></i>
-        <i style="--speed: 40; --bg: orange" class="square"></i>
-        <i style="--speed: 21; --bg: green" class="rectangle"></i>
-        <i style="--speed: 14; --bg: white" class="square"></i>
-        <i style="--speed: 38; --bg: green" class="rectangle"></i>
-        <i style="--speed: 19; --bg: red" class="dodecagram"></i>
-        <i style="--speed: 29; --bg: pink" class="wavy-line"> </i>
-        <i style="--speed: 34; --bg: white" class="hexagram"></i>
-        <i style="--speed: 17; --bg: indigo" class="wavy-line"></i>
-        <i style="--speed: 32; --bg: yellow" class="pentagram"></i>
-        <i style="--speed: 23; --bg: white" class="square"></i>
-        <i style="--speed: 18; --bg: green" class="rectangle"></i>
-        <i style="--speed: 37; --bg: red" class="dodecagram"></i>
-        <i style="--speed: 48; --bg: pink" class="wavy-line"> </i>
-        <i style="--speed: 38; --bg: pink" class="rectangle"></i>
-        <i style="--speed: 13; --bg: red" class="pentagram"></i>
-        <i style="--speed: 49; --bg: yellow" class="dodecagram"></i>
-        <i style="--speed: 19; --bg: purple" class="wavy-line"></i>
-        <i style="--speed: 15; --bg: cyan" class="square"></i>
+      <div class="confetti-container">
+        <div class="confetti">
+          <i style="--speed: 10; --bg: yellow" class="square"></i>
+          <i style="--speed: 18; --bg: white" class="pentagram"></i>
+          <i style="--speed: 29; --bg: green" class="rectangle"></i>
+          <i style="--speed: 17; --bg: blue" class="hexagram"></i>
+          <i style="--speed: 33; --bg: red" class="pentagram"></i>
+          <i style="--speed: 26; --bg: yellow" class="dodecagram"></i>
+          <i style="--speed: 24; --bg: pink" class="wavy-line"> </i>
+          <i style="--speed: 5; --bg: blue" class="wavy-line"></i>
+          <i style="--speed: 40; --bg: white" class="square"></i>
+          <i style="--speed: 17; --bg: green" class="rectangle"></i>
+          <i style="--speed: 25; --bg: white" class="square"></i>
+          <i style="--speed: 18; --bg: green" class="rectangle"></i>
+          <i style="--speed: 15; --bg: yellow" class="wavy-line"> </i>
+          <i style="--speed: 32; --bg: yellow" class="pentagram"></i>
+          <i style="--speed: 25; --bg: white" class="square"></i>
+          <i style="--speed: 18; --bg: green" class="rectangle"></i>
+          <i style="--speed: 37; --bg: yellow" class="dodecagram"></i>
+          <i style="--speed: 23; --bg: pink" class="wavy-line"></i>
+          <i style="--speed: 37; --bg: red" class="dodecagram"></i>
+          <i style="--speed: 37; --bg: pink" class="wavy-line"></i>
+          <i style="--speed: 36; --bg: white" class="hexagram"></i>
+          <i style="--speed: 32; --bg: green" class="wavy-line"></i>
+          <i style="--speed: 32; --bg: yellow" class="pentagram"></i>
+          <i style="--speed: 29; --bg: white" class="square"></i>
+          <i style="--speed: 18; --bg: green" class="rectangle"></i>
+          <i style="--speed: 37; --bg: red" class="dodecagram"></i>
+          <i style="--speed: 23; --bg: pink" class="wavy-line"> </i>
+          <i style="--speed: 30; --bg: pink" class="rectangle"></i>
+          <i style="--speed: 30; --bg: red" class="square"></i>
+          <i style="--speed: 18; --bg: red" class="pentagram"></i>
+          <i style="--speed: 19; --bg: green" class="rectangle"></i>
+          <i style="--speed: 16; --bg: blue" class="hexagram"></i>
+          <i style="--speed: 23; --bg: red" class="pentagram"></i>
+          <i style="--speed: 34; --bg: yellow" class="dodecagram"></i>
+          <i style="--speed: 39; --bg: pink" class="wavy-line"></i>
+          <i style="--speed: 40; --bg: purple" class="square"></i>
+          <i style="--speed: 21; --bg: green" class="rectangle"></i>
+          <i style="--speed: 14; --bg: white" class="square"></i>
+          <i style="--speed: 38; --bg: green" class="rectangle"></i>
+          <i style="--speed: 19; --bg: red" class="dodecagram"></i>
+          <i style="--speed: 29; --bg: pink" class="wavy-line"> </i>
+          <i style="--speed: 21; --bg: white" class="hexagram"></i>
+          <i style="--speed: 17; --bg: purple" class="wavy-line"></i>
+          <i style="--speed: 32; --bg: yellow" class="pentagram"></i>
+          <i style="--speed: 23; --bg: white" class="square"></i>
+          <i style="--speed: 18; --bg: green" class="rectangle"></i>
+          <i style="--speed: 37; --bg: red" class="dodecagram"></i>
+          <i style="--speed: 48; --bg: pink" class="wavy-line"> </i>
+          <i style="--speed: 38; --bg: pink" class="rectangle"></i>
+          <i style="--speed: 13; --bg: red" class="pentagram"></i>
+          <i style="--speed: 49; --bg: yellow" class="dodecagram"></i>
+          <i style="--speed: 19; --bg: cyan" class="wavy-line"></i>
+          <i style="--speed: 15; --bg: steelblue" class="square"></i>
+          <i style="--speed: 10; --bg: yellow" class="square"></i>
+          <i style="--speed: 18; --bg: white" class="pentagram"></i>
+          <i style="--speed: 29; --bg: green" class="rectangle"></i>
+          <i style="--speed: 17; --bg: blue" class="hexagram"></i>
+          <i style="--speed: 33; --bg: red" class="pentagram"></i>
+          <i style="--speed: 26; --bg: yellow" class="dodecagram"></i>
+          <i style="--speed: 24; --bg: pink" class="wavy-line"> </i>
+          <i style="--speed: 5; --bg: white" class="wavy-line"></i>
+          <i style="--speed: 40; --bg: purple" class="square"></i>
+          <i style="--speed: 17; --bg: green" class="rectangle"></i>
+          <i style="--speed: 25; --bg: white" class="square"></i>
+          <i style="--speed: 18; --bg: green" class="rectangle"></i>
+          <i style="--speed: 15; --bg: cyan" class="wavy-line"> </i>
+          <i style="--speed: 32; --bg: yellow" class="pentagram"></i>
+          <i style="--speed: 45; --bg: white" class="square"></i>
+          <i style="--speed: 18; --bg: green" class="rectangle"></i>
+          <i style="--speed: 37; --bg: red" class="dodecagram"></i>
+          <i style="--speed: 23; --bg: pink" class="wavy-line"> </i>
+          <i style="--speed: 37; --bg: red" class="dodecagram"></i>
+          <i style="--speed: 37; --bg: pink" class="wavy-line"> </i>
+          <i style="--speed: 26; --bg: white" class="hexagram"></i>
+          <i style="--speed: 32; --bg: cyan" class="wavy-line"></i>
+          <i style="--speed: 32; --bg: yellow" class="pentagram"></i>
+          <i style="--speed: 45; --bg: white" class="square"></i>
+          <i style="--speed: 18; --bg: green" class="rectangle"></i>
+          <i style="--speed: 37; --bg: red" class="dodecagram"></i>
+          <i style="--speed: 23; --bg: pink" class="wavy-line"> </i>
+          <i style="--speed: 50; --bg: pink" class="rectangle"></i>
+          <i style="--speed: 30; --bg: red" class="square"></i>
+          <i style="--speed: 18; --bg: red" class="pentagram"></i>
+          <i style="--speed: 19; --bg: green" class="rectangle"></i>
+          <i style="--speed: 16; --bg: blue" class="hexagram"></i>
+          <i style="--speed: 23; --bg: red" class="pentagram"></i>
+          <i style="--speed: 33; --bg: yellow" class="dodecagram"></i>
+          <i style="--speed: 39; --bg: white" class="wavy-line"></i>
+          <i style="--speed: 40; --bg: orange" class="square"></i>
+          <i style="--speed: 21; --bg: green" class="rectangle"></i>
+          <i style="--speed: 14; --bg: white" class="square"></i>
+          <i style="--speed: 38; --bg: green" class="rectangle"></i>
+          <i style="--speed: 19; --bg: red" class="dodecagram"></i>
+          <i style="--speed: 29; --bg: pink" class="wavy-line"> </i>
+          <i style="--speed: 34; --bg: white" class="hexagram"></i>
+          <i style="--speed: 17; --bg: indigo" class="wavy-line"></i>
+          <i style="--speed: 32; --bg: yellow" class="pentagram"></i>
+          <i style="--speed: 23; --bg: white" class="square"></i>
+          <i style="--speed: 18; --bg: green" class="rectangle"></i>
+          <i style="--speed: 37; --bg: red" class="dodecagram"></i>
+          <i style="--speed: 48; --bg: pink" class="wavy-line"> </i>
+          <i style="--speed: 38; --bg: pink" class="rectangle"></i>
+          <i style="--speed: 13; --bg: red" class="pentagram"></i>
+          <i style="--speed: 49; --bg: yellow" class="dodecagram"></i>
+          <i style="--speed: 19; --bg: purple" class="wavy-line"></i>
+          <i style="--speed: 15; --bg: cyan" class="square"></i>
+        </div>
       </div>
-    </div>
+      <canvas id="app"> </canvas>
     </section>
-   
-     <div class="disable-touch"></div>
+
+    <div class="disable-touch"></div>
     <script type="module" src="/src/main.ts"></script>
     <!-- <script type="module" src="src/utils/competition.ts"></script> -->
   </body>

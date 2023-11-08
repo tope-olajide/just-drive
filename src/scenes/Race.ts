@@ -1,3 +1,4 @@
+import { mainCamera } from "./../main";
 import {
   AmbientLight,
   DirectionalLight,
@@ -12,7 +13,12 @@ import {
   Vector3,
 } from "three";
 
-import { mainCamera } from "../main";
+import {
+  checkPlayersGameOverStatus,
+  displayCongratulationModal,
+  mainCamera,
+  sortAndGetPosition,
+} from "../main";
 
 // @ts-ignore
 import TWEEN, { Tween } from "@tweenjs/tween.js";
@@ -39,8 +45,17 @@ import {
 } from "../utils/coinsLoader";
 import { IallGameCars } from "./CarSelectionScene";
 import cars from "../utils/cars";
+import {
+  channel,
+  displayScore,
+  startBroadcastingScore,
+  userScores,
+  username,
+} from "../utils/tournament";
 
 export default class RaceScene extends Scene {
+  private isTornamentMode: string | undefined;
+
   private mainRoad = new Object3D();
   private mainRoadClone = new Object3D();
   private roadSize = 0;
@@ -54,11 +69,6 @@ export default class RaceScene extends Scene {
   private buildingBlockB = new Object3D();
   private buildingBlockC = new Object3D();
   private buildingBlockD = new Object3D();
-  private ferrari = new Object3D();
-  private playerBox = new Mesh(
-    new BoxGeometry(),
-    new MeshPhongMaterial({ color: 0x0000ff })
-  );
 
   private pooledObstacles = <Array<Object3D>>[];
   private pooledCoins = <Array<Object3D>>[];
@@ -66,7 +76,7 @@ export default class RaceScene extends Scene {
   private taxi = new Object3D();
   private coin = new Object3D();
   private obstacleOne = new Group();
- // private obstacleTwo = new Group();
+  // private obstacleTwo = new Group();
   private obstacleThree = new Group();
   private obstacleFour = new Group();
   private obstacleFive = new Group();
@@ -100,8 +110,6 @@ export default class RaceScene extends Scene {
 
   private activeCarIndex = 0;
 
-  
-
   private sporty = new Object3D();
   private pickup = new Object3D();
   private offroad = new Object3D();
@@ -109,7 +117,12 @@ export default class RaceScene extends Scene {
   private carsContainer: Object3D[] = [];
 
   private playerCar!: Object3D;
-  
+
+  constructor(isTournament?: string) {
+    super();
+    this.load();
+    this.isTornamentMode = isTournament;
+  }
 
   async load() {
     this.mainRoad = await mainRoad();
@@ -135,7 +148,7 @@ export default class RaceScene extends Scene {
     this.add(this.pickup, this.offroad, this.suv, this.sporty);
 
     this.carsContainer.push(this.pickup, this.offroad, this.suv, this.sporty);
-    
+
     this.ferrari = await loadCar("Offroad");
     this.bus = await loadRoadObstacle("Bus");
     this.bus.scale.set(0.0002, 0.0002, 0.0002);
@@ -157,13 +170,7 @@ export default class RaceScene extends Scene {
     this.coin.rotation.set(90 * (Math.PI / 180), 0, 0);
 
     this.obstacleOne = loadObstacleOne(this.bus, this.taxi);
-    /*    this.obstacleTwo = loadObstacleTwo(
-      this.bus,
-      this.taxi,
-      this.limo,
-      this.fireTruck,
-      this.van
-    ); */
+
     this.obstacleThree = loadObstacleThree(
       this.bus,
       this.taxi,
@@ -225,7 +232,7 @@ export default class RaceScene extends Scene {
     this.add(this.buildingBlockD);
 
     this.mainRoad.position.set(0, -0.1, -2.1);
-    this.mainRoad.scale.set(0.04, 0.04, 0.04);
+    this.mainRoad.scale.set(0.045, 0.045, 0.045);
     this.add(this.mainRoad);
 
     this.mainRoadClone = this.mainRoad.clone();
@@ -248,12 +255,11 @@ export default class RaceScene extends Scene {
     this.poolObstacles();
     this.poolCoins();
 
-    const ambient = new AmbientLight("#3F4A59", 3);
-    this.add(ambient);
-
     const light = new DirectionalLight(0xffffff, 3);
-    light.position.set(0, 2, 1);
+    light.position.set(0, 1.5, 1);
     this.add(light);
+    const ambient = new AmbientLight("#fff", 1);
+    this.add(ambient);
     (document.getElementById("restartGameButton") as HTMLInputElement).onclick =
       () => {
         this.restartGame();
@@ -295,11 +301,11 @@ export default class RaceScene extends Scene {
       this.groupFCoins
     );
     this.pooledCoins.push(
-       this.groupACoins,
+      this.groupACoins,
       this.groupBCoins,
       this.groupCCoins,
       this.groupDCoins,
-      this.groupECoins, 
+      this.groupECoins,
       this.groupFCoins
     );
   }
@@ -364,23 +370,6 @@ export default class RaceScene extends Scene {
     }
   }
 
-  /*  private moveCoins() {
-    for (let i = 0; i < this.pooledCoins.length; i++) {
-      if (this.pooledCoins[i].visible) {
-        this.pooledCoins[i].position.z += this.speed * this.delta;
-        this.detectCollisionWithCoins(this.pooledCoins[i]);
-        if (this.pooledCoins[i].position.z > 2.5) {
-          this.pooledCoins[i].visible = false;
-          this.displayCoinsChildren(this.pooledCoins[i]);
-          this.pooledCoins[i].position.set(0, 0, 0);
-        }
-        if (this.pooledCoins[i].position.z > -5) {
-          this.spawnCoins();
-        }
-      }
-    }
-  } */
-
   private moveObstacleOne() {
     if ((this.activeObstacleOne.visible = true)) {
       this.activeObstacleOne.position.z += this.speed * this.delta;
@@ -403,80 +392,6 @@ export default class RaceScene extends Scene {
     }
   }
 
-  /*   private spawnCoins() {
-    const coins = this.getRandomPooledCoin();
-    if (coins) {
-      coins.position.z = -10;
-      coins.visible = true;
-    }
-  } */
-
-  /*   private moveObstacle() {
-    for (let i = 0; i < this.pooledObstacles.length; i++) {
-      if (this.pooledObstacles[i].visible) {
-        // console.log(this.pooledObstacles[i].position.z)
-        this.pooledObstacles[i].position.z += this.speed * this.delta;
-        this.detectCollisionWithObstacles(this.pooledObstacles[i]);
-        if (this.pooledObstacles[i].position.z > 1.5) {
-          this.pooledObstacles[i].visible = false;
-        //  this.pooledObstacles[i].position.set(0, 0, -10);
-          
-        }
-         if (this.pooledObstacles[i].position.z > -5) {
-          const availableItems = this.pooledCoins.filter((item) => item.visible);
-    if (availableItems.length < 2) {
-     this.spawnObstacle();
-    }
-        } 
-        //  console.log(this.pooledObstacles[i].position.z)
-      }
-    }
-  } */
-
-  /*   private spawnAnotherObstacle() {
-    for (let i = 0; i < this.pooledObstacles.length; i++) {
-      if (this.pooledObstacles[i].visible) {
-      
-        
-        if (this.pooledObstacles[i].position.z > -5) {
-          const availableItems = this.pooledObstacles.filter((item) => !item.visible);
-          if (availableItems.length < 2) {
-           this.spawnObstacle();
-          }
-          
-        } 
-        //  console.log(this.pooledObstacles[i].position.z)
-      }
-    }
-  } */
-
-/*   private moveObstacle() {
-    for (let i = 0; i < this.pooledObstacles.length; i++) {
-      if (this.pooledObstacles[i].visible) {
-        this.pooledObstacles[i].position.z += this.speed * this.delta;
-      }
-    }
-  }
-
-  private resetObstacle() {
-    for (let i = 0; i < this.pooledObstacles.length; i++) {
-      if (this.pooledObstacles[i].visible) {
-        if (this.pooledObstacles[i].position.z > 1.5) {
-          this.pooledObstacles[i].visible = false;
-          this.pooledObstacles[i].position.set(0, 0, -10);
-        }
-      }
-    }
-  } */
-
-  /*   private detectCollisionWithObstacles(activeObstacle: Object3D) {
-    for (let i = 0; i < activeObstacle.children.length; i += 1) {
-      this.obstacleBox.setFromObject(activeObstacle.children[i]);
-      if (this.playerBoxCollider.intersectsBox(this.obstacleBox)) {
-        this.gameOver();
-      }
-    }
-  } */
   private detectCollisionWithObstacles() {
     for (let i = 0; i < this.activeObstacleOne.children.length; i += 1) {
       this.obstacleBox.setFromObject(this.activeObstacleOne.children[i]);
@@ -491,7 +406,7 @@ export default class RaceScene extends Scene {
         this.gameOver();
       }
     }
-  } 
+  }
 
   private displayCoinsChildren(parent: Object3D) {
     for (let i = 0; i < parent.children.length; i += 1) {
@@ -501,27 +416,36 @@ export default class RaceScene extends Scene {
     }
   }
 
-/*   private resetCoins() {
-    for (let i = 0; i < this.pooledCoins.length; i++) {
-      if (this.pooledCoins[i].visible) {
-        this.pooledCoins[i].visible = false;
-        this.displayCoinsChildren(this.pooledCoins[i]);
-        this.pooledCoins[i].position.set(0, 0, 0);
-      }
-    }
-  } */
-
   private gameOver() {
     console.log("game over");
     this.isGameOver = true;
     this.clock.stop();
     //  this.resetObstacle();
-    (
-      document.getElementById("gameOverModal") as HTMLInputElement
-    ).style.display = "flex";
+
     this.isPlayerHeadStart = false;
     this.saveCoins();
     this.saveHighScore();
+    if (this.isTornamentMode === "true") {
+      setTimeout(() => {
+        const result = sortAndGetPosition(userScores, username);
+        const position = result.position + 1;
+        const playersGameStatus = checkPlayersGameOverStatus();
+        if (position === 1 && playersGameStatus === "Finished") {
+          console.log({ playersGameStatus });
+          return displayCongratulationModal();
+        } else {
+          (
+            document.getElementById(
+              "tournamentGameOverModal"
+            ) as HTMLInputElement
+          ).style.display = "flex";
+        }
+      }, 1000);
+    } else {
+      (
+        document.getElementById("gameOverModal") as HTMLInputElement
+      ).style.display = "flex";
+    }
   }
 
   private restartGame() {
@@ -568,15 +492,28 @@ export default class RaceScene extends Scene {
   }
 
   initialize() {
- 
-    
-      mainCamera.rotation.x = -25 * (Math.PI / 180);
-    mainCamera.position.set(0, 0.17, -0.45);
-    
+    if (this.isTornamentMode === "true") {
+      channel.attach((err) => {
+        if (!err) {
+          channel.subscribe(function (message) {
+            displayScore(message, "scoreList");
+          });
+          const interval = setInterval(async () => {
+            startBroadcastingScore(this.scores, this.isGameOver);
+            if (this.isGameOver) {
+              clearInterval(interval);
+            }
+          }, 200);
+        } else {
+          console.error("Error attaching to the channel: " + err.message);
+        }
+      });
+    }
+
+    mainCamera.rotation.x = -25 * (Math.PI / 180);
+    mainCamera.position.set(0, 0.16, -0.4);
+
     setTimeout(() => {
- /*      this.spawnObstacleOne();
-      this.spawnObstacleTwo(); */
-      //this.spawnCoins();
       this.isPlayerHeadStart = true;
     }, 4000);
 
@@ -593,85 +530,39 @@ export default class RaceScene extends Scene {
       document.querySelector(".pause-button") as HTMLInputElement
     ).style.display = "block";
 
-  
-    this.allGameCars = (JSON.parse(localStorage.getItem('allGameCars')!));
-    this.activeCarIndex = this.allGameCars
-      .findIndex((car) => car.isActive === true);
+    this.allGameCars = JSON.parse(localStorage.getItem("allGameCars")!);
+    this.activeCarIndex = this.allGameCars.findIndex(
+      (car) => car.isActive === true
+    );
     this.playerCar = this.carsContainer[this.activeCarIndex];
 
-    this.playerCar.scale.set(0.025, 0.025, 0.025);
+    this.playerCar.scale.set(0.023, 0.023, 0.023);
     this.playerCar.rotation.y = 180 * (Math.PI / 180);
     this.playerCar.position.set(-0.04, -0.065, -0.7);
 
-    this.playerCar.visible = true
-
+    this.playerCar.visible = true;
 
     document.onkeydown = (e) => {
-      if (e.key === "ArrowLeft") {
-        this.moveLeft();
-      }
-      if (e.key === " ") {
-        console.log(this.playerBox.position);
-      }
-      if (e.key === "ArrowRight") {
-        this.moveRight();
-      }
-      if (e.key === "a") {
-        this.moveCameraLeft();
-      }
-      if (e.key === "d") {
-        this.moveCameraRight();
-      }
-      if (e.key === "e") {
-        this.moveCameraUp();
-        //this.playerBox.position.y += 0.008;
-      }
-      if (e.key === "x") {
-        this.moveCameraDown();
-        // this.playerBox.position.y -= 0.008;
-      }
-      if (e.key === "ArrowUp") {
-        this.moveCameraForward();
-        // this.playerBox.position.z -= 0.008;
-      }
-      if (e.key === "ArrowDown") {
-        this.moveCameraBackward();
-        // this.playerBox.position.z += 0.008;
+      if (!this.isGameOver) {
+        if (e.key === "ArrowLeft") {
+          this.moveLeft();
+        }
+        if (e.key === " ") {
+          this.pauseAndResumeGame();
+        }
+        if (e.key === "ArrowRight") {
+          this.moveRight();
+        }
       }
     };
   }
-  private moveCameraLeft = () => {
-    mainCamera.position.x -= 0.08;
-  };
-  private moveCameraRight = () => {
-    mainCamera.position.x += 0.08;
-  };
-  private moveCameraUp = () => {
-    mainCamera.position.y += 0.08;
-    console.log( mainCamera.position.y)
-    //this.playerBox.position.y += 0.008;
-  };
-  private moveCameraDown = () => {
-    mainCamera.position.y -= 0.08;
-    console.log( mainCamera.position.y)
-  };
-  private moveCameraForward = () => {
-    mainCamera.position.z -= 0.08;
-    // this.mainRoad.position.z += 1;
-    console.log(mainCamera.position.z);
-    // this.playerBox.position.z += 0.008;
-  };
-  private moveCameraBackward = () => {
-    mainCamera.position.z += 0.08;
-    console.log(mainCamera.position.z);
-    //this.playerBox.position.z -= 0.008;
-  };
+
   private pauseAndResumeGame() {
     if (!this.isGamePaused) {
-      this.clock.stop();
       (
         document.getElementById("gamePausedModal") as HTMLInputElement
       ).style.display = "flex";
+      this.clock.stop();
       this.isGamePaused = true;
     } else {
       this.clock.start();
@@ -680,64 +571,74 @@ export default class RaceScene extends Scene {
       ).style.display = "none";
       this.isGamePaused = false;
     }
-
     this.saveCoins();
     this.saveHighScore();
   }
   private moveLeft() {
-    //    if (this.ferrari.position.x !== -0.051) {
-    console.log(this.playerCar.position.x);
-    this.playerCar.rotation.y = -170 * (Math.PI / 180);
-
-    const resetRotation = new TWEEN.Tween(this.playerCar.rotation)
-      .to({ y: this.playerCar.rotation.y - 10 * (Math.PI / 180) }, 100)
-      .easing(TWEEN.Easing.Quadratic.Out);
-    const tweenLeft = new TWEEN.Tween(this.playerCar.position)
-      .to({ x: this.playerCar.position.x - 0.1 }, 200)
-      .easing(TWEEN.Easing.Quadratic.Out)
-      .onUpdate(() => {
-        // this.ferrari.rotation.y = -160 * (Math.PI / 180);
-        /* if (this.ferrari.position.x <= -0.051) {
-            this.ferrari.position.x = -0.051;
-          } */
-      })
-      .onComplete(() => {
-        resetRotation.start();
-      });
-    tweenLeft.start();
+    console.log(mainCamera.position.x);
     const tweenCameraLeft = new Tween(mainCamera.position)
-      .to({ x: mainCamera.position.x - 0.04 }, 200)
+      .to({ x: mainCamera.position.x - 0.06 }, 200)
       .easing(TWEEN.Easing.Quadratic.Out);
-    tweenCameraLeft.start();
-    console.log(this.ferrari.position.x);
-    //   }
+    if (this.playerCar.position.x !== -0.14) {
+      this.playerCar.rotation.y = -165 * (Math.PI / 180);
+
+      const resetRotation = new TWEEN.Tween(this.playerCar.rotation)
+        .to({ y: this.playerCar.rotation.y - 15 * (Math.PI / 180) }, 100)
+        .easing(TWEEN.Easing.Quadratic.Out);
+      const tweenLeft = new TWEEN.Tween(this.playerCar.position)
+        .to({ x: this.playerCar.position.x - 0.1 }, 200)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+          if (this.playerCar.position.x < -0.14) {
+            this.playerCar.position.x = -0.14;
+          }
+
+          if (mainCamera.position.x < -0.06) {
+            mainCamera.position.x = -0.06;
+          }
+        })
+        .onComplete(() => {
+          resetRotation.start();
+          this.playerCar.position.x = Number(
+            this.playerCar.position.x.toFixed(2)
+          );
+        });
+      tweenLeft.start();
+      tweenCameraLeft.start();
+    }
   }
 
   private moveRight() {
-    //    if (this.ferrari.position.x !== 0.056999999999999995) {
-    this.playerCar.rotation.y = 170 * (Math.PI / 180);
-    const resetRotation = new TWEEN.Tween(this.playerCar.rotation)
-      .to({ y: this.playerCar.rotation.y + 10 * (Math.PI / 180) }, 100)
-      .easing(TWEEN.Easing.Quadratic.Out);
-    const tweenRight = new Tween(this.playerCar.position)
-      .to({ x: this.playerCar.position.x + 0.1 }, 200)
-      .easing(TWEEN.Easing.Quadratic.Out)
-      /* .onUpdate(() => {
-          if (this.ferrari.position.x >= 0.056999999999999995) {
-            this.ferrari.position.x = 0.056999999999999995;
-          }
-        }) */
-      .onComplete(() => {
-        resetRotation.start();
-      });
-    tweenRight.start();
-
+    console.log(mainCamera.position.x);
     const tweenCameraRight = new Tween(mainCamera.position)
-      .to({ x: mainCamera.position.x + 0.04 }, 200)
+      .to({ x: mainCamera.position.x + 0.06 }, 200)
       .easing(TWEEN.Easing.Quadratic.Out);
-    tweenCameraRight.start();
-    console.log(this.playerCar.position.x);
-    //   }
+    if (this.playerCar.position.x !== 0.16) {
+      this.playerCar.rotation.y = 165 * (Math.PI / 180);
+      const resetRotation = new TWEEN.Tween(this.playerCar.rotation)
+        .to({ y: this.playerCar.rotation.y + 15 * (Math.PI / 180) }, 100)
+        .easing(TWEEN.Easing.Quadratic.Out);
+      const tweenRight = new Tween(this.playerCar.position)
+        .to({ x: this.playerCar.position.x + 0.1 }, 200)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+          if (this.playerCar.position.x > 0.16) {
+            this.playerCar.position.x = 0.16;
+          }
+          if (mainCamera.position.x > 0.12) {
+            mainCamera.position.x = 0.12;
+          }
+        })
+        .onComplete(() => {
+          resetRotation.start();
+
+          this.playerCar.position.x = Number(
+            this.playerCar.position.x.toFixed(2)
+          );
+        });
+      tweenRight.start();
+      tweenCameraRight.start();
+    }
   }
 
   update() {
@@ -784,11 +685,11 @@ export default class RaceScene extends Scene {
 
     //  console.log(this.mainRoad.position.z);
 
-    if (this.mainRoad.position.z > 4.1) {
+    if (this.mainRoad.position.z > 4.5) {
       this.mainRoad.position.z = this.mainRoadClone.position.z - this.roadSize;
       // console.log(this.mainRoad.position.z);
     }
-    if (this.mainRoadClone.position.z > 4.1) {
+    if (this.mainRoadClone.position.z > 4.5) {
       this.mainRoadClone.position.z = this.mainRoad.position.z - this.roadSize;
     }
     if (this.isPlayerHeadStart) {
@@ -797,6 +698,10 @@ export default class RaceScene extends Scene {
       this.moveObstacleTwo();
       this.detectCollisionWithObstacles();
       this.detectCollisionWithCoins();
+    }
+    if (!this.isGameOver && this.speed < 2.2 && !this.isGamePaused) {
+      this.speed += 0.00002;
+      //  console.log(this.speed)
     }
   }
   hide() {
@@ -818,34 +723,9 @@ export default class RaceScene extends Scene {
     this.coins = 0;
     (document.querySelector(".coins-count") as HTMLInputElement).innerHTML =
       this.coins.toString();
-    
-    // this.isGameOver = false;
-    
-
-/*      for (let i = 0; i < this.pooledObstacles.length; i++) {
-      // if (this.pooledObstacles[i].visible) {
-      this.pooledObstacles[i].visible = false;
-      this.pooledObstacles[i].position.set(0, 0, -5);
-      //  }
-    } 
-    for (let i = 0; i < this.pooledCoins.length; i++) {
-      // if (this.pooledObstacles[i].visible) {
-      this.pooledCoins[i].visible = false;
-      this.pooledCoins[i].position.set(0, 0, -5);
-      //  }
-    }  */
 
     this.saveCoins();
     this.saveHighScore();
-
-    /* if (this.activeObstacleOne.visible || this.activeObstacleTwo.visible) {
-      this.activeObstacleOne.position.z = -10;
-      this.activeObstacleOne.visible = false;
-      this.activeObstacleTwo.position.z = -15;
-      this.activeObstacleTwo.visible = false;
-      this.activeCoinsGroup.position.z = -10;
-    }*/
-
 
     this.isGameOver = false;
     this.activeObstacleOne.position.z = -10;
@@ -855,6 +735,5 @@ export default class RaceScene extends Scene {
     this.activeCoinsGroup.position.z = -10;
     this.isGamePaused = false;
     this.isPlayerHeadStart = false;
-    
   }
 }

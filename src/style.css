@@ -260,7 +260,7 @@ flex-direction: column;
 }
 #closeCompetitionModal{
  cursor: pointer;
- z-index:999;
+ z-index:1;
 }
 
 .spinner {
@@ -350,7 +350,7 @@ flex-direction: column;
 
 #closeTournamentGameOverModal, #closeSpectatorModeModal{
   cursor: pointer;
-  z-index: 10;
+  z-index: 1;
 }
 
 #tournamentGameOverModal{
@@ -377,9 +377,22 @@ font-size: 22px;
 #congratulatonsModeModal{
   display:none
 }
+.disable-touch {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  display: none;
+  
+}
 
+@media screen and (max-width: 480px) {
+  
+  .modal-header, .modal-body, .modal-bottom{
+width: 95%;
 
-
+ } 
+ 
+}
 
 
 
@@ -499,7 +512,7 @@ font-size: 22px;
 
 .confetti-container {
   user-select: none;
-  z-index: 10;
+  z-index: 999;
   
 }
 .confetti {
@@ -507,6 +520,7 @@ font-size: 22px;
   left: 0;
   right: 0;
   display: none;
+  z-index: 999;
   /* z-index: 500; */
   width: 100vw;
    height: 100vh; 

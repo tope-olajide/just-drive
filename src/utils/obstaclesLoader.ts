@@ -113,8 +113,7 @@ export const loadObstacleTwo = (
   return meshGroup;
 };
 export const loadObstacleThree = (
-  bus: Object3D,
-  taxi: Object3D,
+
   limo: Object3D,
   fireTruck: Object3D,
   van: Object3D
@@ -158,11 +157,10 @@ export const loadObstacleThree = (
 };
 
 export const loadObstacleFour = (
-  bus: Object3D,
   taxi: Object3D,
   limo: Object3D,
   fireTruck: Object3D,
-  van: Object3D
+
 ) => {
   const meshGroup = new Group();
   const fireTruckCloneLane2 = fireTruck.clone();
@@ -202,8 +200,6 @@ export const loadObstacleFive = (
   bus: Object3D,
   taxi: Object3D,
   limo: Object3D,
-  fireTruck: Object3D,
-  van: Object3D
 ) => {
   const meshGroup = new Group();
   const taxiCloneLane1 = taxi.clone();

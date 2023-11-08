@@ -28,8 +28,8 @@ ably.connection.on("failed", function () {
   console.log("# failed connection");
 });
 
-export const userScores = {};
-export const userGameStatus = {};
+export const userScores:any = {};
+export const userGameStatus:any = {};
 
 // Function to display Scores in the channel
 export function displayScore(message: Ably.Types.Message, elementID:string) {
@@ -53,7 +53,7 @@ export function displayScore(message: Ably.Types.Message, elementID:string) {
 
 function updateScoreList(elementID:string) {
   const scoreListElement = document.getElementById(elementID);
-  scoreListElement.innerHTML = "";
+  scoreListElement!.innerHTML = "";
 
   // Create an array of objects with user ID and score
   const userScoreArray = [];
@@ -99,29 +99,38 @@ export function copyToClipboard() {
 
   document.body.removeChild(textArea);
 }
+function isAlphanumeric(inputField:any) {
+  const inputValue = inputField.value;
+  const alphanumericPattern = /^[a-zA-Z0-9]+$/;
+
+  if (!alphanumericPattern.test(inputValue) || inputValue.includes(" ")) {
+    alert("Error: Only alphanumeric characters (no spaces) are allowed.");
+    inputField.value = ""; // Clear the input field
+  }
+}
 
 export const subscribeToAChannel = (joinChannelName?: string | undefined) => {
-  const hostInputField = document.getElementById("hostUsername");
-  const visitorInputField = document.getElementById("visitorUsername");
-  /*  const playerName = inputField?.value.trim();
-    if (playerName === "") {
-        alert("Username is empty.");
-        return
-    }
-    if (playerName.includes(" ")) {
-        alert("username must not contain a space.");
-        return
-  } */
+  const hostInputField = document.getElementById("hostUsername")  as HTMLInputElement;
+  const visitorInputField = document.getElementById("visitorUsername") as HTMLInputElement;
+
+  hostInputField?.addEventListener("blur", function () {
+    isAlphanumeric(hostInputField);
+  });
+  
+  visitorInputField?.addEventListener("blur", function () {
+    isAlphanumeric(visitorInputField);
+  });
+  
   username = hostInputField?.value || visitorInputField?.value;
   console.log({ username });
   ably.connection.on("connected", function () {
     console.log("# successful connection");
   });
   (
-    document.getElementById("usernameSection") as HTMLInputElement
+    document.getElementById("usernameSection") as HTMLElement
   ).style.display = "none";
   (
-    document.getElementById("createCompetitionButton") as HTMLInputElement
+    document.getElementById("createCompetitionButton") as HTMLElement
   ).style.display = "block";
   console.log("# successful connection");
 
@@ -129,14 +138,14 @@ export const subscribeToAChannel = (joinChannelName?: string | undefined) => {
   joinLink = window.location.href.split("?")[0] + `?space=${channelName}`;
   console.log(`Join Link: ${joinLink}`);
   (
-    document.getElementById("createCompetitionButton") as HTMLInputElement
+    document.getElementById("createCompetitionButton") as HTMLElement
   ).style.display = "none";
   const copyLinkButton = document.querySelector(
     "#copyLinkButton"
   ) as HTMLButtonElement;
   copyLinkButton.style.display = "block";
   (
-    document.getElementById("startTournamentButton") as HTMLInputElement
+    document.getElementById("startTournamentButton") as HTMLElement
   ).style.display = "block";
 };
 

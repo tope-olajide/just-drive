@@ -14,41 +14,45 @@ const customConfig: Config = {
   length: 3,
 };
 
-let apiKey = "xxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxx";
-let username: string = "";
+
+export let username: string = "";
+
 
 let channelName: string = uniqueNamesGenerator(customConfig);
 let joinLink = "";
 
-let ably = new Ably.Realtime({ key: apiKey });
 
+let ably = new Ably.Realtime({ authUrl: '/.netlify/functions/create-token-request' });
 export let channel: Ably.Types.RealtimeChannelCallbacks;
 ably.connection.on("failed", function () {
   console.log("# failed connection");
 });
 
-const userScores = {};
+export const userScores = {};
+export const userGameStatus = {};
 
 // Function to display Scores in the channel
-export function displayScore(message) {
-  const scoreListElement = document.getElementById("scoreList");
+export function displayScore(message: Ably.Types.Message, elementID:string) {
+  const scoreListElement = document.getElementById(elementID);
 
   const messageItem = document.createElement("p");
   messageItem.textContent = String(message.data);
   scoreListElement!.appendChild(messageItem);
 
   // Parse the message to get the score and username
-  const [score, username] = message.data.split("-");
+  const [score, username, isGameOver] = message.data.split("-");
 
   // Update the userScores object with the new score
   userScores[username] = parseInt(score);
+  userGameStatus[username]  = isGameOver
 
+  
   // Update the UI to display all user scores
-  updateScoreList();
+  updateScoreList(elementID);
 }
 
-function updateScoreList() {
-  const scoreListElement = document.getElementById("scoreList");
+function updateScoreList(elementID:string) {
+  const scoreListElement = document.getElementById(elementID);
   scoreListElement.innerHTML = "";
 
   // Create an array of objects with user ID and score
@@ -63,8 +67,13 @@ function updateScoreList() {
   // Iterate over the sorted array and update the score list
   userScoreArray.forEach((userScore) => {
     const messageItem = document.createElement("p");
-    messageItem.textContent = `${userScore.userId}: ${userScore.score}`;
-    scoreListElement.appendChild(messageItem);
+    if (userScore.userId === username) {
+      // Check if the userId is equal to the specified username
+      messageItem.textContent = `You: ${userScore.score}`; // If true, return 'You'
+    } else {
+      messageItem.textContent = `${userScore.userId}: ${userScore.score}`; // Otherwise, return the actual value
+    }
+    scoreListElement!.appendChild(messageItem);
   });
 }
 
@@ -131,13 +140,14 @@ export const subscribeToAChannel = (joinChannelName?: string | undefined) => {
   ).style.display = "block";
 };
 
-export function startBroadcastingScore(scores: number) {
+export function startBroadcastingScore(scores: number, isGameOver:boolean) {
   if (channel) {
     channel.publish({
       name: username,
-      data: String(scores + "-" + username),
-    }); // Publish the score to the channel
+      data: String(scores + "-" + username + "-" + isGameOver),
+    });
     console.log(channel.name);
-    console.log(String(scores + "-" + username));
+    console.log(String(scores + "-" + username + "-" + isGameOver));
   }
 }
+

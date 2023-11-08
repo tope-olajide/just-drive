@@ -68,9 +68,9 @@ export default class MainMenuScene extends Scene {
     
 
     const light = new DirectionalLight(0xffffff, 3);
-    light.position.set(0, 2, 1);
+    light.position.set(0, 1.5, 1);
     this.add(light);
-    const ambient = new AmbientLight("#3F4A59", 3);
+    const ambient = new AmbientLight("#fff", 1);
     this.add(ambient);
 
     this.pickup = await loadCar(cars[0].name);
@@ -135,6 +135,10 @@ export default class MainMenuScene extends Scene {
     if (!this.visible) {
       this.visible = true;
     }
+
+    
+      
+    
     const urlParams = new URLSearchParams(window.location.search);
     const spaceParam = urlParams.get("space");
     if (spaceParam) {

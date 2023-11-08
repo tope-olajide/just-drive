@@ -81,10 +81,10 @@ export default class CarSelectionScene extends Scene {
 
     this.carsContainer.push(this.pickup, this.offroad, this.suv, this.sporty);
 
-    const light = new DirectionalLight("rgb(150, 255, 255)", 3);
-    light.position.set(0, 1, 0);
+    const light = new DirectionalLight(0xffffff, 3);
+    light.position.set(0, 1.5, 1);
     this.add(light);
-    const ambient = new AmbientLight(0xffffff, 1.5);
+    const ambient = new AmbientLight("#fff", 1);
     this.add(ambient);
 
     if (!JSON.parse(localStorage.getItem("allGameCars")!)) {

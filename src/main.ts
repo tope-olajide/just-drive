@@ -60,12 +60,12 @@ const render = () => {
   renderer.render(currentScene, mainCamera);
   requestAnimationFrame(render);
 };
-(document.querySelector("#playGameButton") as HTMLInputElement).onclick =
+(document.querySelector("#playGameButton") as HTMLElement).onclick =
   () => {
     switchToRaceSceneWithTournament();
   };
 
-   (document.querySelector("#startTournamentButton") as HTMLInputElement).onclick =
+   (document.querySelector("#startTournamentButton") as HTMLElement).onclick =
     () => {
      
       (document.getElementById('competitionModal') as HTMLButtonElement).style.display = 'none';
@@ -87,79 +87,79 @@ main();
 
 
 
-(document.querySelector("#quitGameButton") as HTMLInputElement).onclick =
+(document.querySelector("#quitGameButton") as HTMLElement).onclick =
   () => {
     (
-      document.getElementById("gamePausedModal") as HTMLInputElement
+      document.getElementById("gamePausedModal") as HTMLElement
     ).style.display = "none";
     
     switchToMainMenuScene();
   };
 
-  (document.querySelector("#exitGameButton") as HTMLInputElement).onclick =
+  (document.querySelector("#exitGameButton") as HTMLElement).onclick =
   () => {
     (
-      document.getElementById("gameOverModal") as HTMLInputElement
+      document.getElementById("gameOverModal") as HTMLElement
     ).style.display = "none";
     switchToMainMenuScene();
   };
 
-(document.querySelector("#closeGamePausedModal") as HTMLInputElement).onclick =
+(document.querySelector("#closeGamePausedModal") as HTMLElement).onclick =
   () => {
     (
-      document.getElementById("gamePausedModal") as HTMLInputElement
+      document.getElementById("gamePausedModal") as HTMLElement
     ).style.display = "none";
   };
 
-  (document.querySelector(".home-menu") as HTMLInputElement).onclick = () => {
+  (document.querySelector(".home-menu") as HTMLElement).onclick = () => {
     switchToMainMenuScene();
   };
 
 
-(document.querySelector("#closeSpectatorModeModal") as HTMLInputElement).onclick =
+(document.querySelector("#closeSpectatorModeModal") as HTMLElement).onclick =
   () => {
     (
-      document.getElementById("spectatorModeModal") as HTMLInputElement
+      document.getElementById("spectatorModeModal") as HTMLElement
     ).style.display = "none";
     switchToMainMenuScene()
   }
 
-  (document.querySelector("#closeCompetitionModal") as HTMLInputElement).onclick =
+  (document.querySelector("#closeCompetitionModal") as HTMLElement).onclick =
   () => {
     (
-      document.getElementById("competitionModal") as HTMLInputElement
+      document.getElementById("competitionModal") as HTMLElement
     ).style.display = "none";
 
     (
-      document.getElementById("startTournamentButton") as HTMLInputElement
+      document.getElementById("startTournamentButton") as HTMLElement
     ).style.display = "none";
 
     (
-      document.getElementById("copyLinkButton") as HTMLInputElement
+      document.getElementById("copyLinkButton") as HTMLElement
     ).style.display = "none";
 
     (
-      document.getElementById("usernameSection") as HTMLInputElement
+      document.getElementById("usernameSection") as HTMLElement
     ).style.display = "block";
 
     (
-      document.getElementById("createCompetitionButton") as HTMLInputElement
+      document.getElementById("createCompetitionButton") as HTMLElement
     ).style.display = "block";
 
     
   };
 
   
-  (document.querySelector("#competitionButton") as HTMLInputElement).onclick =
+  (document.querySelector("#competitionButton") as HTMLElement).onclick =
   () => {
     (document.getElementById('competitionModal') as HTMLButtonElement).style.display = 'flex';
   };
 
-  (document.querySelector("#createCompetitionButton") as HTMLInputElement).onclick =
+  (document.querySelector("#createCompetitionButton") as HTMLElement).onclick =
   () => {
     subscribeToAChannel()
   };
-  (document.querySelector("#copyLinkButton") as HTMLInputElement).onclick =
+  (document.querySelector("#copyLinkButton") as HTMLElement).onclick =
   () => {
     copyToClipboard()
   };
@@ -169,7 +169,7 @@ main();
     const newURL = urlObject.toString();
     window.history.replaceState({}, document.title, newURL);
   }
-  (document.querySelector("#joinTournamentButton") as HTMLInputElement).onclick =
+  (document.querySelector("#joinTournamentButton") as HTMLElement).onclick =
     () => {
       const urlParams = new URLSearchParams(window.location.search);
       const spaceParam = urlParams?.get('space') || '';
@@ -181,12 +181,12 @@ main();
    
   };
 
-  (document.querySelector("#marketButton") as HTMLInputElement).onclick =
+  (document.querySelector("#marketButton") as HTMLElement).onclick =
   () => {
     switchToCarSelectionScene()
   };
 
-  export function sortAndGetPosition(userScores, targetUser) {
+  export function sortAndGetPosition(userScores: Record<string, number>, targetUser: string) {
     // Create an array of objects from the original userScores object
     const scoresArray = Object.entries(userScores).map(([user, score]) => ({ user, score }));
 
@@ -197,7 +197,7 @@ main();
     const position = scoresArray.findIndex(entry => entry.user === targetUser);
 
     // Return the sorted array and the position
-    return { sortedScores: scoresArray, position: position };
+    return { sortedScores: scoresArray, position };
 }
   const competitionStatusElement = document.getElementById("competitionStatus");
   const playerPositionElement = document.getElementById("playerPosition");
@@ -256,7 +256,7 @@ const switchToSpectactorMode = () => {
         displayScore(message, 'spectatorModeLiveScores');
       });
       (
-        document.querySelector("#liveScoreBoard") as HTMLInputElement
+        document.querySelector("#liveScoreBoard") as HTMLElement
       ).style.display = "block";
       checkStatus();
       
@@ -268,7 +268,7 @@ const switchToSpectactorMode = () => {
     }
   });
 }
-(document.querySelector("#spectatorModeButton") as HTMLInputElement).onclick =
+(document.querySelector("#spectatorModeButton") as HTMLElement).onclick =
 () => {
   switchToSpectactorMode()
 }; 
@@ -276,22 +276,22 @@ const switchToSpectactorMode = () => {
 
 export function displayCongratulationModal() {
     (document.getElementById('congratulatonsModeModal') as HTMLButtonElement).style.display = 'flex';
-    (document.querySelector(".confetti") as HTMLInputElement).style.display = 'flex';
+    (document.querySelector(".confetti") as HTMLElement).style.display = 'flex';
 }
 
 
 export function closeCongratulationModal() {
   (document.getElementById('congratulatonsModeModal') as HTMLButtonElement).style.display = 'none';
-  (document.querySelector(".confetti") as HTMLInputElement).style.display = 'none';
+  (document.querySelector(".confetti") as HTMLElement).style.display = 'none';
   switchToMainMenuScene();
   
 }
 
-(document.querySelector("#closeCongratulatonsModeModal") as HTMLInputElement).onclick =
+(document.querySelector("#closeCongratulatonsModeModal") as HTMLElement).onclick =
 () => {
   closeCongratulationModal();
   (
-    document.querySelector("#liveScoreBoard") as HTMLInputElement
+    document.querySelector("#liveScoreBoard") as HTMLElement
   ).style.display = "none";
 }; 
 

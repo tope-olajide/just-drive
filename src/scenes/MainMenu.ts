@@ -4,11 +4,9 @@ import {
   Scene,
   Object3D,
   Box3,
-  Group,
 } from "three";
 
 import { mainCamera } from "../main";
-import TWEEN, { Tween } from "@tweenjs/tween.js";
 
 import { mainRoad } from "../utils/mainRoad";
 import { citySkyBox } from "../utils/skybox";
@@ -143,7 +141,7 @@ export default class MainMenuScene extends Scene {
     const spaceParam = urlParams.get("space");
     if (spaceParam) {
       (
-        document.querySelector("#tournamentInvitationModal") as HTMLInputElement
+        document.querySelector("#tournamentInvitationModal") as HTMLElement
       ).style.display = "flex";
     }
 
@@ -151,15 +149,15 @@ export default class MainMenuScene extends Scene {
 
     mainCamera.position.set(0, 0.06, 0);
     (
-      document.querySelector(".menu-buttons-container") as HTMLInputElement
+      document.querySelector(".menu-buttons-container") as HTMLElement
     ).style.display = "flex";
     (
-      document.querySelector(".info-section") as HTMLInputElement
+      document.querySelector(".info-section") as HTMLElement
     ).style.display = "block";
 
-    (document.querySelector(".high-score") as HTMLInputElement).innerHTML =
+    (document.querySelector(".high-score") as HTMLElement).innerHTML =
       JSON.parse(localStorage.getItem("high-score")!);
-    (document.querySelector(".total-coins") as HTMLInputElement).innerHTML =
+    (document.querySelector(".total-coins") as HTMLElement).innerHTML =
       JSON.parse(localStorage.getItem("total-coins")!);
 
 
@@ -189,10 +187,10 @@ export default class MainMenuScene extends Scene {
   hide() {
     this.visible = false;
     (
-      document.querySelector(".menu-buttons-container") as HTMLInputElement
+      document.querySelector(".menu-buttons-container") as HTMLElement
     ).style.display = "none";
     (
-      document.querySelector(".info-section") as HTMLInputElement
+      document.querySelector(".info-section") as HTMLElement
     ).style.display = "none";
   }
 }

@@ -1,14 +1,11 @@
-import { mainCamera } from "./../main";
+
 import {
   AmbientLight,
   DirectionalLight,
   Scene,
-  BoxGeometry,
-  Mesh,
   Object3D,
   Clock,
   Box3,
-  MeshPhongMaterial,
   Group,
   Vector3,
 } from "three";
@@ -118,6 +115,14 @@ export default class RaceScene extends Scene {
 
   private playerCar!: Object3D;
 
+  private touchstartX = 0;
+
+  private touchendX = 0;
+
+  private touchstartY = 0;
+
+  private touchendY = 0;
+
   constructor(isTournament?: string) {
     super();
     this.load();
@@ -149,7 +154,6 @@ export default class RaceScene extends Scene {
 
     this.carsContainer.push(this.pickup, this.offroad, this.suv, this.sporty);
 
-    this.ferrari = await loadCar("Offroad");
     this.bus = await loadRoadObstacle("Bus");
     this.bus.scale.set(0.0002, 0.0002, 0.0002);
 
@@ -175,22 +179,16 @@ export default class RaceScene extends Scene {
       this.bus,
       this.taxi,
       this.limo,
-      this.fireTruck,
-      this.van
     );
     this.obstacleFour = loadObstacleFour(
       this.bus,
       this.taxi,
       this.limo,
-      this.fireTruck,
-      this.van
     );
     this.obstacleFive = loadObstacleFive(
       this.bus,
       this.taxi,
       this.limo,
-      this.fireTruck,
-      this.van
     );
     this.groupACoins = loadGroupACoins(this.coin);
     this.groupBCoins = loadGroupBCoins(this.coin);
@@ -199,16 +197,16 @@ export default class RaceScene extends Scene {
     this.groupECoins = loadGroupECoins(this.coin);
     this.groupFCoins = loadGroupFCoins(this.coin);
 
-    (document.querySelector(".pause-button") as HTMLInputElement).onclick =
+    (document.querySelector(".pause-button") as HTMLElement).onclick =
       () => {
         this.pauseAndResumeGame();
       };
     (
-      document.querySelector("#closeGamePausedModal") as HTMLInputElement
+      document.querySelector("#closeGamePausedModal") as HTMLElement
     ).onclick = () => {
       this.pauseAndResumeGame();
     };
-    (document.getElementById("resumeGameButton") as HTMLInputElement).onclick =
+    (document.getElementById("resumeGameButton") as HTMLElement).onclick =
       () => {
         this.pauseAndResumeGame();
       };
@@ -260,10 +258,24 @@ export default class RaceScene extends Scene {
     this.add(light);
     const ambient = new AmbientLight("#fff", 1);
     this.add(ambient);
-    (document.getElementById("restartGameButton") as HTMLInputElement).onclick =
+    (document.getElementById("restartGameButton") as HTMLElement).onclick =
       () => {
         this.restartGame();
       };
+    
+      const gestureZone = (document.getElementById('app') as HTMLElement);
+      if (!this.isGameOver && !this.isGamePaused) {
+        gestureZone.addEventListener('touchstart', (event) => {
+          this.touchstartX = event.changedTouches[0].screenX;
+          this.touchstartY = event.changedTouches[0].screenY;
+        }, false);
+  
+        gestureZone.addEventListener('touchend', (event) => {
+          this.touchendX = event.changedTouches[0].screenX;
+          this.touchendY = event.changedTouches[0].screenY;
+          this.handleTouch();
+        }, false);
+      }
   }
 
   private poolObstacles() {
@@ -359,7 +371,7 @@ export default class RaceScene extends Scene {
           this.coins += 1;
           // console.log( this.coins)
           (
-            document.querySelector(".coins-count") as HTMLInputElement
+            document.querySelector(".coins-count") as HTMLElement
           ).innerHTML = `${Math.round(this.coins)}`;
         }
 
@@ -437,20 +449,21 @@ export default class RaceScene extends Scene {
           (
             document.getElementById(
               "tournamentGameOverModal"
-            ) as HTMLInputElement
+            ) as HTMLElement
           ).style.display = "flex";
         }
       }, 1000);
     } else {
       (
-        document.getElementById("gameOverModal") as HTMLInputElement
+        document.getElementById("gameOverModal") as HTMLElement
       ).style.display = "flex";
     }
+    (document.querySelector('.disable-touch') as HTMLElement).style.display = 'block';
   }
 
   private restartGame() {
     (
-      document.getElementById("gameOverModal") as HTMLInputElement
+      document.getElementById("gameOverModal") as HTMLElement
     ).style.display = "none";
     this.activeObstacleOne.position.z = -10;
     this.activeObstacleOne.visible = false;
@@ -461,13 +474,13 @@ export default class RaceScene extends Scene {
     this.speed = 1;
     this.coins = 0;
     this.scores = 0;
-    (document.querySelector(".coins-count") as HTMLInputElement).innerHTML =
+    (document.querySelector(".coins-count") as HTMLElement).innerHTML =
       "0";
 
     this.isGameOver = false;
     this.isGamePaused = false;
     (
-      document.querySelector(".pause-button") as HTMLInputElement
+      document.querySelector(".pause-button") as HTMLElement
     ).style.display = "block";
     // this.player.position.x = 0;
     setTimeout(() => {
@@ -476,7 +489,7 @@ export default class RaceScene extends Scene {
       this.spawnCoins(); */
       this.isPlayerHeadStart = true;
     }, 4000);
-    //  (document.querySelector('.disable-touch') as HTMLInputElement).style.display = 'none';
+     (document.querySelector('.disable-touch') as HTMLElement).style.display = 'none';
   }
   private async saveCoins() {
     const prevTotalCoins = localStorage.getItem("total-coins") || 0;
@@ -509,6 +522,19 @@ export default class RaceScene extends Scene {
         }
       });
     }
+    const gestureZone = (document.getElementById('app') as HTMLElement);
+    if (!this.isGameOver && !this.isGamePaused) {
+      gestureZone.addEventListener('touchstart', (event) => {
+        this.touchstartX = event.changedTouches[0].screenX;
+        this.touchstartY = event.changedTouches[0].screenY;
+      }, false);
+
+      gestureZone.addEventListener('touchend', (event) => {
+        this.touchendX = event.changedTouches[0].screenX;
+        this.touchendY = event.changedTouches[0].screenY;
+        this.handleTouch();
+      }, false);
+    }
 
     mainCamera.rotation.x = -25 * (Math.PI / 180);
     mainCamera.position.set(0, 0.16, -0.4);
@@ -524,10 +550,10 @@ export default class RaceScene extends Scene {
     this.isGamePaused = false;
     this.clock.start();
     (
-      document.querySelector(".race-info-section") as HTMLInputElement
+      document.querySelector(".race-info-section") as HTMLElement
     ).style.display = "block";
     (
-      document.querySelector(".pause-button") as HTMLInputElement
+      document.querySelector(".pause-button") as HTMLElement
     ).style.display = "block";
 
     this.allGameCars = JSON.parse(localStorage.getItem("allGameCars")!);
@@ -555,19 +581,21 @@ export default class RaceScene extends Scene {
         }
       }
     };
+
+    
   }
 
   private pauseAndResumeGame() {
     if (!this.isGamePaused) {
       (
-        document.getElementById("gamePausedModal") as HTMLInputElement
+        document.getElementById("gamePausedModal") as HTMLElement
       ).style.display = "flex";
       this.clock.stop();
       this.isGamePaused = true;
     } else {
       this.clock.start();
       (
-        document.getElementById("gamePausedModal") as HTMLInputElement
+        document.getElementById("gamePausedModal") as HTMLElement
       ).style.display = "none";
       this.isGamePaused = false;
     }
@@ -640,13 +668,34 @@ export default class RaceScene extends Scene {
       tweenCameraRight.start();
     }
   }
+  private handleTouch = () => {
+    const pageWidth = window.innerWidth || document.body.clientWidth;
+    const treshold = Math.max(1, Math.floor(0.01 * (pageWidth)));
+    const limit = Math.tan(45 * (1.5 / 180) * Math.PI);
+    const x = this.touchendX - this.touchstartX;
+    const y = this.touchendY - this.touchstartY;
+   
+    const yx = Math.abs(y / x);
+    if (Math.abs(x) > treshold || Math.abs(y) > treshold) {
+      if (yx <= limit) {
+        if (x < 0) {
+          this.moveLeft();
+          console.log('fkdjfkdfjkdjfjfkjdjfkdjf')
+        } else {
+          console.log('pppppppppppppppppppppppp')
+          this.moveRight();
+        }
+      }
+      
+    }
+  };
 
   update() {
     this.delta = this.clock.getDelta();
     TWEEN.update();
     if (!this.isGameOver && !this.isGamePaused) {
       this.scores += Math.round(this.speed * this.delta + 1);
-      (document.querySelector(".scores-count") as HTMLInputElement).innerHTML =
+      (document.querySelector(".scores-count") as HTMLElement).innerHTML =
         this.scores.toString();
     }
 
@@ -660,11 +709,7 @@ export default class RaceScene extends Scene {
     this.buildingBlockC.position.z += this.speed * this.delta;
     this.buildingBlockD.position.z += this.speed * this.delta;
 
-    /*     this.obstacleOne.position.z += this.speed * this.delta;
-   console.log(this.obstacleOne.position.z)
-    if (this.obstacleOne.position.z > 0.5) {
-      this.obstacleOne.position.z = -5;
-    } */
+   
 
     if (this.buildingBlockB.position.z > 3.5) {
       this.buildingBlockB.position.z =
@@ -706,10 +751,10 @@ export default class RaceScene extends Scene {
   }
   hide() {
     (
-      document.querySelector(".pause-button") as HTMLInputElement
+      document.querySelector(".pause-button") as HTMLElement
     ).style.display = "none";
     (
-      document.querySelector(".race-info-section") as HTMLInputElement
+      document.querySelector(".race-info-section") as HTMLElement
     ).style.display = "none";
     this.visible = false;
     this.clock.stop();
@@ -717,11 +762,11 @@ export default class RaceScene extends Scene {
     // this.resetCoins();
 
     this.scores = 0;
-    (document.querySelector(".scores-count") as HTMLInputElement).innerHTML =
+    (document.querySelector(".scores-count") as HTMLElement).innerHTML =
       this.scores.toString();
 
     this.coins = 0;
-    (document.querySelector(".coins-count") as HTMLInputElement).innerHTML =
+    (document.querySelector(".coins-count") as HTMLElement).innerHTML =
       this.coins.toString();
 
     this.saveCoins();
@@ -735,5 +780,6 @@ export default class RaceScene extends Scene {
     this.activeCoinsGroup.position.z = -10;
     this.isGamePaused = false;
     this.isPlayerHeadStart = false;
+    (document.querySelector('.disable-touch') as HTMLElement).style.display = 'none';
   }
 }

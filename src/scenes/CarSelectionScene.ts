@@ -2,23 +2,17 @@ import {
   AmbientLight,
   DirectionalLight,
   Scene,
-  BoxGeometry,
-  Mesh,
   Object3D,
   Clock,
   Box3,
-  MeshPhongMaterial,
-  Group,
 } from "three";
 
 import { mainCamera } from "../main";
-import TWEEN, { Tween } from "@tweenjs/tween.js";
 
 import { mainRoad } from "../utils/mainRoad";
 import { citySkyBox } from "../utils/skybox";
 import { loadBlock } from "../utils/buildingBlockLoader";
 import { Car, loadCar } from "../utils/raceCarLoader";
-import { loadObstacleOne, loadRoadObstacle } from "../utils/obstaclesLoader";
 import cars from "../utils/cars";
 
 export interface IallGameCars {
@@ -93,21 +87,21 @@ export default class CarSelectionScene extends Scene {
 
     this.allGameCars = JSON.parse(localStorage.getItem("allGameCars")!);
 
-    (document.getElementById("nextBtn") as HTMLInputElement).onclick = () => {
+    (document.getElementById("nextBtn") as HTMLElement).onclick = () => {
       this.switchToNextCar();
     };
 
-    (document.getElementById("prevBtn") as HTMLInputElement).onclick = () => {
+    (document.getElementById("prevBtn") as HTMLElement).onclick = () => {
       this.switchToPrevCar();
     };
 
-    (document.getElementById("car-price-button") as HTMLInputElement).onclick =
+    (document.getElementById("car-price-button") as HTMLElement).onclick =
       () => {
         this.purchaseCharacter();
       };
 
     (
-      document.getElementById("selectCharacterBtn") as HTMLInputElement
+      document.getElementById("selectCharacterBtn") as HTMLElement
     ).onclick = () => {
       this.activateCar();
     };
@@ -141,7 +135,7 @@ export default class CarSelectionScene extends Scene {
     this.activeCar.position.set(0, -0.081, -0.48);
     this.activeCar.visible = true;
     (
-      document.querySelector(".car-selection-container") as HTMLInputElement
+      document.querySelector(".car-selection-container") as HTMLElement
     ).style.display = "flex";
     if (!this.visible) {
       this.visible = true;
@@ -152,12 +146,12 @@ export default class CarSelectionScene extends Scene {
     mainCamera.position.set(0, 0.06, 0);
 
     (
-      document.querySelector(".info-section") as HTMLInputElement
+      document.querySelector(".info-section") as HTMLElement
     ).style.display = "block";
 
-    (document.querySelector(".high-score") as HTMLInputElement).innerHTML =
+    (document.querySelector(".high-score") as HTMLElement).innerHTML =
       JSON.parse(localStorage.getItem("high-score")!);
-    (document.querySelector(".total-coins") as HTMLInputElement).innerHTML =
+    (document.querySelector(".total-coins") as HTMLElement).innerHTML =
       JSON.parse(localStorage.getItem("total-coins")!);
 
     this.buildingBlockA.position.set(-0.45, -0.088, -1.6);
@@ -200,7 +194,7 @@ export default class CarSelectionScene extends Scene {
 
     this.add(this.mainRoadClone);
 
-    (document.querySelector(".home-menu") as HTMLInputElement).style.display =
+    (document.querySelector(".home-menu") as HTMLElement).style.display =
       "block";
   }
 
@@ -231,7 +225,7 @@ export default class CarSelectionScene extends Scene {
       localStorage.setItem("total-coins", remainingCoins.toString()!);
       this.activateCar();
       (
-        document.querySelector(".total-coins") as HTMLInputElement
+        document.querySelector(".total-coins") as HTMLElement
       ).innerHTML = `${remainingCoins}`;
     }
   }
@@ -239,29 +233,29 @@ export default class CarSelectionScene extends Scene {
   update() {
     this.delta = this.clock.getDelta();
     this.activeCar.rotation.y += this.speed * this.delta;
-    (document.querySelector(".car-name") as HTMLInputElement).innerHTML =
+    (document.querySelector(".car-name") as HTMLElement).innerHTML =
       this.allGameCars[this.activeIndexNumber].name;
 
     if (this.allGameCars[this.activeIndexNumber].isLocked) {
       (
-        document.getElementById("selectCharacterBtn") as HTMLInputElement
+        document.getElementById("selectCharacterBtn") as HTMLElement
       ).style.display = "none";
       (
-        document.getElementById("car-price-button") as HTMLInputElement
+        document.getElementById("car-price-button") as HTMLElement
       ).style.display = "block";
       (
-        document.getElementById("character-price-text") as HTMLInputElement
+        document.getElementById("character-price-text") as HTMLElement
       ).innerHTML = `${this.allGameCars[this.activeIndexNumber].price}`;
     }
     if (this.allGameCars[this.activeIndexNumber].isActive) {
       (
-        document.getElementById("selectCharacterBtn") as HTMLInputElement
+        document.getElementById("selectCharacterBtn") as HTMLElement
       ).style.display = "block";
       (
-        document.getElementById("car-price-button") as HTMLInputElement
+        document.getElementById("car-price-button") as HTMLElement
       ).style.display = "none";
       (
-        document.getElementById("select-button-text") as HTMLInputElement
+        document.getElementById("select-button-text") as HTMLElement
       ).innerHTML = "Selected";
     }
 
@@ -270,13 +264,13 @@ export default class CarSelectionScene extends Scene {
       !this.allGameCars[this.activeIndexNumber].isActive
     ) {
       (
-        document.getElementById("selectCharacterBtn") as HTMLInputElement
+        document.getElementById("selectCharacterBtn") as HTMLElement
       ).style.display = "block";
       (
-        document.getElementById("car-price-button") as HTMLInputElement
+        document.getElementById("car-price-button") as HTMLElement
       ).style.display = "none";
       (
-        document.getElementById("select-button-text") as HTMLInputElement
+        document.getElementById("select-button-text") as HTMLElement
       ).innerText = "Select";
     }
   }
@@ -284,15 +278,15 @@ export default class CarSelectionScene extends Scene {
   hide() {
     this.visible = false;
     (
-      document.querySelector(".menu-buttons-container") as HTMLInputElement
+      document.querySelector(".menu-buttons-container") as HTMLElement
     ).style.display = "none";
     (
-      document.querySelector(".info-section") as HTMLInputElement
+      document.querySelector(".info-section") as HTMLElement
     ).style.display = "none";
-    (document.querySelector(".home-menu") as HTMLInputElement).style.display =
+    (document.querySelector(".home-menu") as HTMLElement).style.display =
       "none";
     (
-      document.querySelector(".car-selection-container") as HTMLInputElement
+      document.querySelector(".car-selection-container") as HTMLElement
     ).style.display = "none";
   }
 }

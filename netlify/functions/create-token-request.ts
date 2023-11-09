@@ -15,6 +15,9 @@ const handler: Handler = async (event, context) => {
 
     return {
       statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "http://localhost:8888"
+      },
       body: JSON.stringify(tokenRequestData),
     };
   } catch (error) {

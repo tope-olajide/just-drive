@@ -26,7 +26,7 @@ let ably: Ably.Realtime
 export let channel: Ably.Types.RealtimeChannelCallbacks
 
 function initializeAbly() {
-  ably = new Ably.Realtime({ authUrl: 'https://just-drive.netlify.app/.netlify/functions/create-token-request' });
+  ably = new Ably.Realtime({ authUrl: '/.netlify/functions/create-token-request' });
   console.log('initializing ably....')
   ably.connection.on('connected', function () {
     console.log('# Successful connection');
@@ -35,7 +35,9 @@ function initializeAbly() {
   ably.connection.on('failed', function () {
     console.log('# Failed connection');
   });
+  console.log(ably)
 }
+initializeAbly()
 
 export const userScores:any = {};
 export const userGameStatus:any = {};
@@ -120,7 +122,7 @@ function isAlphanumeric(inputField:any) {
 
 export const subscribeToAChannel = (joinChannelName?: string | undefined) => {
   if (!ably) {
-    // Initialize Ably if it's not already initialized
+   
     initializeAbly();
   }
   const hostInputField = document.getElementById("hostUsername")  as HTMLInputElement;

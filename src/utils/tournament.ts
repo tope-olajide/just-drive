@@ -22,11 +22,11 @@ let channelName: string = uniqueNamesGenerator(customConfig);
 let joinLink = "";
 
 
-let ably: Ably.Types.RealtimePromise
-export let channel: Ably.Types.RealtimeChannelPromise
+let ably: Ably.Realtime
+export let channel: Ably.Types.RealtimeChannelCallbacks
 
 function initializeAbly() {
-  ably = new Ably.Realtime.Promise({ authUrl: '/.netlify/functions/create-token-request' });
+  ably = new Ably.Realtime({ authUrl: '/.netlify/functions/create-token-request' });
   console.log('initializing ably....')
   ably.connection.on('connected', function () {
     console.log('# Successful connection');

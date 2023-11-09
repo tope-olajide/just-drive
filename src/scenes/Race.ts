@@ -484,9 +484,9 @@ export default class RaceScene extends Scene {
     ).style.display = "block";
     // this.player.position.x = 0;
     setTimeout(() => {
-      /* this.spawnObstacleOne();
+       this.spawnObstacleOne();
       this.spawnObstacleTwo();
-      this.spawnCoins(); */
+      this.spawnCoins(); 
       this.isPlayerHeadStart = true;
     }, 4000);
      (document.querySelector('.disable-touch') as HTMLElement).style.display = 'none';

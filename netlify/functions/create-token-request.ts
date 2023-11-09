@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const handler: Handler = async (event, context) => {
-  const client = new Ably.Realtime(process.env.ABBLY_CONNECTION_KEY!);
+  const client = new Ably.Realtime(process.env.ABLY_CONNECTION_KEY!);
 
   try {
     const tokenRequestData = await client.auth.createTokenRequest({

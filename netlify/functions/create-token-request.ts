@@ -12,14 +12,16 @@ const handler: Handler = async (event, context) => {
       clientId: "host",
     });
     console.log({ tokenRequestData });
-
+client.close()
     return {
+
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "http://localhost:8888"
       },
       body: JSON.stringify(tokenRequestData),
     };
+    
   } catch (error) {
     console.log({ error });
     return {

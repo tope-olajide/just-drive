@@ -26,7 +26,7 @@ let ably: Ably.Realtime
 export let channel: Ably.Types.RealtimeChannelCallbacks
 
 function initializeAbly() {
-  ably = new Ably.Realtime({ authUrl: '/.netlify/functions/create-token-request' });
+  ably = new Ably.Realtime({ authUrl: 'https://just-drive.netlify.app/.netlify/functions/create-token-request' });
   console.log('initializing ably....')
   ably.connection.on('connected', function () {
     console.log('# Successful connection');

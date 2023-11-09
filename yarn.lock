@@ -213,10 +213,10 @@
   resolved "https://registry.yarnpkg.com/@types/webxr/-/webxr-0.5.7.tgz#7a3aaaf1ceeaaad13f1dda66d6571852405bb221"
   integrity sha512-Rcgs5c2eNFnHp53YOjgtKfl/zWX1Y+uFGUwlSXrWcZWu3yhANRezmph4MninmqybUYT6g9ZE0aQ9QIdPkLR3Kg==
 
-ably@^1.2.46:
-  version "1.2.46"
-  resolved "https://registry.yarnpkg.com/ably/-/ably-1.2.46.tgz#815524b85afcc197c9a4d2258543fe2ad907286f"
-  integrity sha512-N+t2C3bWc8P7dL9sJ/WbfspdshSfdJFhkvlqQKBJjPZCjT0WeyW6PW4nQnJK7TfzsiESWZovZ+Aku+/kgZW2OQ==
+ably@^1.2.47:
+  version "1.2.47"
+  resolved "https://registry.yarnpkg.com/ably/-/ably-1.2.47.tgz#d580c84a2fbb1d577912d5d23e8edfafe9befd8c"
+  integrity sha512-YaBr4qwRNBfb9Zb6Oolbng7oK0oDadZG0cWCOv+Wh4XOWi91JKWbcy82bzN1RKkFTT/rCFG7nZrXT5pkMroMLg==
   dependencies:
     "@ably/msgpack-js" "^0.4.0"
     got "^11.8.5"

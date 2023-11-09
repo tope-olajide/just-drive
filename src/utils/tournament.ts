@@ -22,11 +22,20 @@ let channelName: string = uniqueNamesGenerator(customConfig);
 let joinLink = "";
 
 
-let ably = new Ably.Realtime({ authUrl: '/.netlify/functions/create-token-request' });
-export let channel: Ably.Types.RealtimeChannelCallbacks;
-ably.connection.on("failed", function () {
-  console.log("# failed connection");
-});
+let ably: Ably.Types.RealtimePromise
+export let channel: Ably.Types.RealtimeChannelPromise
+
+function initializeAbly() {
+  ably = new Ably.Realtime.Promise({ authUrl: '/.netlify/functions/create-token-request' });
+  console.log('initializing ably....')
+  ably.connection.on('connected', function () {
+    console.log('# Successful connection');
+  });
+  
+  ably.connection.on('failed', function () {
+    console.log('# Failed connection');
+  });
+}
 
 export const userScores:any = {};
 export const userGameStatus:any = {};
@@ -105,11 +114,15 @@ function isAlphanumeric(inputField:any) {
 
   if (!alphanumericPattern.test(inputValue) || inputValue.includes(" ")) {
     alert("Error: Only alphanumeric characters (no spaces) are allowed.");
-    inputField.value = ""; // Clear the input field
+    inputField.value = ""; 
   }
 }
 
 export const subscribeToAChannel = (joinChannelName?: string | undefined) => {
+  if (!ably) {
+    // Initialize Ably if it's not already initialized
+    initializeAbly();
+  }
   const hostInputField = document.getElementById("hostUsername")  as HTMLInputElement;
   const visitorInputField = document.getElementById("visitorUsername") as HTMLInputElement;
 
@@ -123,18 +136,17 @@ export const subscribeToAChannel = (joinChannelName?: string | undefined) => {
   
   username = hostInputField?.value || visitorInputField?.value;
   console.log({ username });
-  ably.connection.on("connected", function () {
-    console.log("# successful connection");
-  });
+
   (
     document.getElementById("usernameSection") as HTMLElement
   ).style.display = "none";
   (
     document.getElementById("createCompetitionButton") as HTMLElement
   ).style.display = "block";
-  console.log("# successful connection");
+
 
   channel = ably.channels.get(joinChannelName ? joinChannelName : channelName);
+  console.log({channel})
   joinLink = window.location.href.split("?")[0] + `?space=${channelName}`;
   console.log(`Join Link: ${joinLink}`);
   (

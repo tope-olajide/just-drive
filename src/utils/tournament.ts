@@ -25,7 +25,7 @@ let joinLink = "";
 let ably: Ably.Realtime
 export let channel: Ably.Types.RealtimeChannelCallbacks
 const fetchToken = async () => {
-  const response = await fetch('/.netlify/functions/create-token-request');
+  const response = await fetch('https://just-drive-api.onrender.com/token');
   const result = await response.json();
   console.log({ result })
   return result
@@ -121,7 +121,7 @@ function isAlphanumeric(inputField:any) {
   const inputValue = inputField.value;
   const alphanumericPattern = /^[a-zA-Z0-9]+$/;
 
-  if (!alphanumericPattern.test(inputValue) || inputValue.includes(" ")) {
+  if (!alphanumericPattern.test(inputValue) || inputValue.includes(" ")||!inputValue) {
     alert("Error: Only alphanumeric characters (no spaces) are allowed.");
     inputField.value = ""; 
   }

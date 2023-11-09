@@ -24,9 +24,16 @@ let joinLink = "";
 
 let ably: Ably.Realtime
 export let channel: Ably.Types.RealtimeChannelCallbacks
-
-function initializeAbly() {
+const fetchToken = async () => {
+  const response = await fetch('/.netlify/functions/create-token-request');
+  const result = await response.json();
+  console.log({ result })
+  return result
+}
+async function initializeAbly() {
+  await fetchToken()
   ably = new Ably.Realtime({ authUrl: '/.netlify/functions/create-token-request' });
+
   console.log('initializing ably....')
   ably.connection.on('connected', function () {
     console.log('# Successful connection');

@@ -32,7 +32,7 @@ const fetchToken = async () => {
 }
 async function initializeAbly() {
   await fetchToken()
-  ably = new Ably.Realtime({ authUrl: '/.netlify/functions/create-token-request' });
+  ably = new Ably.Realtime({ authUrl: 'https://just-drive-api.onrender.com/token' });
 
   console.log('initializing ably....')
   ably.connection.on('connected', function () {

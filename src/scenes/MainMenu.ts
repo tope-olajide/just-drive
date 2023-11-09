@@ -52,6 +52,7 @@ export default class MainMenuScene extends Scene {
     this.skyBox = await citySkyBox();
 
     this.skyBox.position.set(0, 0, 0);
+   // this.skyBox.scale.set(0.08, 0.08, 0.08);
     this.add(this.skyBox);
     this.buildingBlockA = await loadBlock("BuildingBlockA");
     this.buildingBlockB = await loadBlock("BuildingBlockB");

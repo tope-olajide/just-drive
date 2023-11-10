@@ -92,7 +92,8 @@ main();
     (
       document.getElementById("gamePausedModal") as HTMLElement
     ).style.display = "none";
-    
+    channel.detach();
+    channel.unsubscribe()
     switchToMainMenuScene();
   };
 
@@ -164,7 +165,24 @@ main();
 
   
   (document.querySelector("#competitionButton") as HTMLElement).onclick =
-  () => {
+    () => {
+      (
+        document.getElementById("startTournamentButton") as HTMLElement
+      ).style.display = "none";
+  
+      (
+        document.getElementById("copyLinkButton") as HTMLElement
+      ).style.display = "none";
+
+      (
+        document.getElementById("usernameSection") as HTMLElement
+      ).style.display = "block";
+  
+      (
+        document.getElementById("createCompetitionButton") as HTMLElement
+      ).style.display = "block";
+   
+
     (document.getElementById('competitionModal') as HTMLButtonElement).style.display = 'flex';
   };
 
@@ -191,6 +209,22 @@ main();
       switchToRaceScene();
       removeURLParameter();
       (document.getElementById('tournamentInvitationModal') as HTMLButtonElement).style.display = 'none';
+     
+      (
+        document.getElementById("startTournamentButton") as HTMLElement
+      ).style.display = "none";
+  
+      (
+        document.getElementById("copyLinkButton") as HTMLElement
+      ).style.display = "none";
+  
+      (
+        document.getElementById("usernameSection") as HTMLElement
+      ).style.display = "block";
+  
+      (
+        document.getElementById("createCompetitionButton") as HTMLElement
+      ).style.display = "block";
    
   };
 

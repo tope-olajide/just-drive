@@ -50,13 +50,14 @@ body {
 }
 
 .menu-buttons-container {
-  bottom: 6px;
+  bottom: 0px;
   display: none;
   align-items: center;
   justify-content: center;
   width: 100%;
   flex-wrap: wrap;
   position: absolute;
+  margin-bottom: 20px;
 }
 
 .car-selection-buttons {

@@ -123,6 +123,8 @@ export default class RaceScene extends Scene {
 
   private touchendY = 0;
 
+  private interval: string | number | NodeJS.Timeout | undefined
+
   constructor(isTournament?: string) {
     super();
     this.load();
@@ -511,12 +513,12 @@ export default class RaceScene extends Scene {
           channel.subscribe(function (message) {
             displayScore(message, "scoreList");
           });
-          const interval = setInterval(async () => {
+           this.interval = setInterval(async () => {
             startBroadcastingScore(this.scores, this.isGameOver);
             if (this.isGameOver) {
-              clearInterval(interval);
+              clearInterval( this.interval);
             }
-          }, 200);
+          }, 500);
         } else {
           console.error("Error attaching to the channel: " + err.message);
         }
@@ -781,5 +783,6 @@ export default class RaceScene extends Scene {
     this.isGamePaused = false;
     this.isPlayerHeadStart = false;
     (document.querySelector('.disable-touch') as HTMLElement).style.display = 'none';
+    clearInterval( this.interval)
   }
 }

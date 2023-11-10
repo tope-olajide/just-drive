@@ -136,8 +136,6 @@ export default class MainMenuScene extends Scene {
     }
 
     
-      
-    
     const urlParams = new URLSearchParams(window.location.search);
     const spaceParam = urlParams.get("space");
     if (spaceParam) {
@@ -160,7 +158,8 @@ export default class MainMenuScene extends Scene {
       JSON.parse(localStorage.getItem("high-score")!);
     (document.querySelector(".total-coins") as HTMLElement).innerHTML =
       JSON.parse(localStorage.getItem("total-coins")!);
-
+      const scoreListElement = document.getElementById('scoreList');
+      scoreListElement!.innerHTML = "";
 
 
 

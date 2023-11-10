@@ -44,8 +44,8 @@ async function initializeAbly() {
   });
   console.log(ably)
 }
-initializeAbly()
 
+initializeAbly();
 export const userScores:any = {};
 export const userGameStatus:any = {};
 
@@ -128,10 +128,9 @@ function isAlphanumeric(inputField:any) {
 }
 
 export const subscribeToAChannel = (joinChannelName?: string | undefined) => {
-  if (!ably) {
-   
+ 
     initializeAbly();
-  }
+  
   const hostInputField = document.getElementById("hostUsername")  as HTMLInputElement;
   const visitorInputField = document.getElementById("visitorUsername") as HTMLInputElement;
 
